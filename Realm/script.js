@@ -1,59 +1,4 @@
-const cards = [
-  {
-    text: "This is your realm, and your realm only...",
-    next: { yes: 1, no: 2 },
-    impact: {
-      yes: { army: +5, people: +5, church: +5, money: +5 },
-      no: { army: +5, people: +5, church: +5, money: +5 },
-    },
-  },
-  {
-    text: "Your army needs better weapons...",
-    next: { yes: 3, no: 4 },
-    impact: { yes: { army: +10, money: -10 }, no: { army: -10, money: +10 } },
-  },
-  {
-    text: "Your people wants lower taxes...",
-    next: { yes: 5, no: 6 },
-    impact: {
-      yes: { people: +15, money: -10 },
-      no: { people: -15, money: +10 },
-    },
-  },
-  {
-    text: "The !",
-    next: {},
-    impact: { yes: { army: +20, money: +15 } },
-  },
-  {
-    text: "Your kingdom is in turmoil.",
-    next: {},
-    impact: { no: { people: -20, church: -10 } },
-  },
-  {
-    text: "Peace has been restored.",
-    next: {},
-    impact: { yes: { people: +20, army: -5 } },
-  },
-  {
-    text: "A new threat looms in the horizon.",
-    next: { yes: 7, no: 8 },
-    impact: { yes: { army: +15, money: -10 }, no: { people: -10 } },
-  },
-  {
-    text: "Your allies are asking for help.",
-    next: { yes: 9, no: 10 },
-    impact: {
-      yes: { army: +10, money: -15 },
-      no: { church: -5, people: -10 },
-    },
-  },
-  {
-    text: "Would you like to marry the queen?",
-    next: { yes: 11, no: 12 },
-    impact: { yes: { love: +100 }, no: {} },
-  },
-]
+import { cards } from "./cards.js"
 
 let factions = {
   army: 75,
@@ -77,7 +22,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showCard() {
     const cardData = cards[currentCardIndex]
+
+    // Actualiza el contenido de la carta
     card.textContent = cardData.text
+
+    // Limpia la carta de contenido anterior
+    card.innerHTML = ""
+
+    // Crea un elemento de imagen
+    const imgElement = document.createElement("img")
+    imgElement.src = cardData.image // Ruta de la imagen desde el objeto `cards`
+    imgElement.alt = "Card Image" // Texto alternativo para la imagen
+    imgElement.style.width = "50px" // Ajusta el ancho de la imagen al 100% del contenedor
+    imgElement.style.height = "50px"
+    // Crea un elemento de texto
+    const textElement = document.createElement("p")
+    textElement.textContent = cardData.text
+
+    // Agrega la imagen y el texto al contenedor de la carta
+    card.appendChild(imgElement)
+    card.appendChild(textElement)
+
+    // Restaura el estado inicial de la carta
     card.style.transform = `translateX(0px) rotate(0deg)`
     card.style.opacity = 1
     acceptIndicator.style.opacity = 0
