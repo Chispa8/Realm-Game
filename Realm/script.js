@@ -3,21 +3,21 @@ const cards = [
     text: "This is your realm, and your realm only...",
     next: { yes: 1, no: 2 },
     impact: {
-      yes: { army: +10, people: -5 },
-      no: { church: +5, money: -10 },
+      yes: { army: +5, people: +5, church: +5, money: +5 },
+      no: { army: +5, people: +5, church: +5, money: +5 },
     },
   },
   {
     text: "Your army needs better weapons...",
     next: { yes: 3, no: 4 },
-    impact: { yes: { army: +10 }, no: { army: -10 } },
+    impact: { yes: { army: +10, money: -10 }, no: { army: -10, money: +10 } },
   },
   {
     text: "Your people wants lower taxes...",
     next: { yes: 5, no: 6 },
     impact: {
       yes: { people: +15, money: -10 },
-      no: { people: -10, money: +10 },
+      no: { people: -15, money: +10 },
     },
   },
   {
