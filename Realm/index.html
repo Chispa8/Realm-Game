@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Realm Game</title>
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="script.js" defer></script>
+  </head>
+  <body>
+    <div id="game-container">
+      <div id="scores">
+        <div class="score">
+          <img src="./icons/warrior.png" alt="Army" class="icon" />
+          <div class="faction-bar" id="army-bar"></div>
+        </div>
+        <div class="score">
+          <img src="./icons/town.png" alt="People" class="icon" />
+          <div class="faction-bar" id="people-bar"></div>
+        </div>
+        <div class="score">
+          <img src="./icons/church.png" alt="Church" class="icon" />
+          <div class="faction-bar" id="church-bar"></div>
+        </div>
+        <div class="score">
+          <img src="./icons/coins.png" alt="Money" class="icon" />
+          <div class="faction-bar" id="money-bar"></div>
+        </div>
+        <div class="score" id="love-score" style="display: none">
+          <img src="./icons/love.png" alt="Love" class="icon" />
+          <div class="faction-bar" id="love-bar"></div>
+        </div>
+      </div>
+
+      <div id="card-container">
+        <div id="accept-indicator" class="indicator">Accept</div>
+        <div id="reject-indicator" class="indicator">Reject</div>
+        <div id="card" class="card"></div>
+      </div>
+    </div>
+  </body>
+</html>

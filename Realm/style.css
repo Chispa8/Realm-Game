@@ -1,0 +1,121 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#game-container {
+  text-align: center;
+  background: rgb(151, 151, 151);
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  width: 900px;
+  height: 700px;
+  overflow: hidden;
+}
+
+#scores {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
+}
+
+.score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.icon {
+  width: 40px;
+  height: 40px;
+}
+
+.faction-bar {
+  width: 100%; /* Ajustar para que empiecen llenas */
+  height: 10px;
+  background-color: gray; /* Color de fondo para la barra vacía */
+  border-radius: 5px;
+  margin-top: 5px;
+  position: relative;
+}
+
+.faction-bar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: var(--fill, 100%); /* Ajustar el ancho de la barra */
+  background-color: green; /* Color de la barra rellena */
+  border-radius: 5px;
+  transition: width 0.3s ease; /* Animación suave */
+}
+
+#card-container {
+  background-color: aqua;
+  position: relative;
+  margin: auto;
+  width: 70%;
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  width: 40%;
+  height: 65%;
+  background-color: #c47373;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5em;
+  font-weight: bold;
+  user-select: none;
+  position: absolute;
+  /* top: 0;  quitar para que actue el display center heredado */
+  /* left: 0;  quitar para que actue el display center heredado */
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  cursor: grab;
+  color: black;
+}
+
+.indicator {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.5em;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+#accept-indicator {
+  left: 100px;
+  color: green;
+}
+
+#reject-indicator {
+  right: 100px;
+  color: red;
+}
