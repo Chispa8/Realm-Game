@@ -31,10 +31,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Crea un elemento de imagen
     const imgElement = document.createElement("img")
-    imgElement.src = cardData.image // Ruta de la imagen desde el objeto `cards`
-    imgElement.alt = "Card Image" // Texto alternativo para la imagen
-    imgElement.style.width = "50px" // Ajusta el ancho de la imagen al 100% del contenedor
-    imgElement.style.height = "50px"
+    imgElement.src = cardData.image
+    imgElement.alt = "Card Image"
+    imgElement.style.width = "70px"
+    imgElement.style.height = "70px"
+    imgElement.classList.add("oscillating")
     // Crea un elemento de texto
     const textElement = document.createElement("p")
     textElement.textContent = cardData.text

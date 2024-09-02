@@ -22,7 +22,7 @@ body {
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   position: relative;
-  width: 900px;
+  width: 1200px;
   height: 700px;
   overflow: hidden;
 }
@@ -80,9 +80,9 @@ body {
 }
 
 .card {
-  width: 40%;
-  height: 65%;
-  background-color: #c47373;
+  width: 35%;
+  height: 70%;
+  background-color: #af8243;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   display: flex;
@@ -93,11 +93,9 @@ body {
   font-weight: bold;
   user-select: none;
   position: absolute;
-  /* top: 0;  quitar para que actue el display center heredado */
-  /* left: 0;  quitar para que actue el display center heredado */
   transition: transform 0.3s ease, opacity 0.3s ease;
   cursor: grab;
-  color: black;
+  color: #25221f;
 }
 
 .indicator {
@@ -119,4 +117,20 @@ body {
 #reject-indicator {
   right: 100px;
   color: red;
+}
+
+@keyframes oscillate {
+  0% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+  100% {
+    transform: rotate(-4deg);
+  }
+}
+
+.oscillating {
+  animation: oscillate 1.5s infinite ease-in-out;
 }
