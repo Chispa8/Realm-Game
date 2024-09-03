@@ -1,4 +1,5 @@
 import { cards } from "./cards.js"
+import { ruler } from "./KQ_names.js"
 
 let factions = {
   army: 75,
@@ -11,20 +12,24 @@ let factions = {
 let currentCardIndex = 0
 let startX = 0
 let currentX = 0
+let yearCount = 0 // Inicializamos el contador de años en 0
 
 document.addEventListener("DOMContentLoaded", () => {
+  const randomRulerIndex = Math.floor(Math.random() * ruler.length)
+
   const card = document.getElementById("card")
   const acceptIndicator = document.getElementById("accept-indicator")
   const rejectIndicator = document.getElementById("reject-indicator")
+  const yearCountElement = document.getElementById("year-count") // Referencia al contador de años
 
   const acceptSound = new Audio("sounds/accept.mp3")
   const rejectSound = new Audio("sounds/reject.mp3")
 
+  // Actualiza la información del gobernante con el índice aleatorio
+  updateRulerDisplay(randomRulerIndex)
+
   function showCard() {
     const cardData = cards[currentCardIndex]
-
-    // Actualiza el contenido de la carta
-    card.textContent = cardData.text
 
     // Limpia la carta de contenido anterior
     card.innerHTML = ""
@@ -36,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     imgElement.style.width = "70px"
     imgElement.style.height = "70px"
     imgElement.classList.add("oscillating")
+
     // Crea un elemento de texto
     const textElement = document.createElement("p")
     textElement.textContent = cardData.text
@@ -49,6 +55,17 @@ document.addEventListener("DOMContentLoaded", () => {
     card.style.opacity = 1
     acceptIndicator.style.opacity = 0
     rejectIndicator.style.opacity = 0
+  }
+
+  function updateRulerDisplay(index) {
+    const rulerImage = document.getElementById("ruler-image")
+    const rulerName = document.getElementById("ruler-name")
+    const rulerCountry = document.getElementById("ruler-country")
+
+    const rulerData = ruler[index]
+    rulerImage.src = rulerData.image
+    rulerName.textContent = rulerData.rulerName
+    rulerCountry.textContent = rulerData.country
   }
 
   function handleMouseDown(event) {
@@ -81,6 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
       setTimeout(() => {
         updateFactions("yes") // Actualizar facciones con la decisión "yes"
         updateFactionDisplay() // Actualizar visualmente las barras después de "yes"
+        incrementYear() // Incrementar el contador de años
         if (cards[currentCardIndex].next.yes !== undefined) {
           currentCardIndex = cards[currentCardIndex].next.yes
           showCard()
@@ -95,6 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
       setTimeout(() => {
         updateFactions("no") // Actualizar facciones con la decisión "no"
         updateFactionDisplay() // Actualizar visualmente las barras después de "no"
+        incrementYear() // Incrementar el contador de años
         if (cards[currentCardIndex].next.no !== undefined) {
           currentCardIndex = cards[currentCardIndex].next.no
           showCard()
@@ -110,6 +129,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     startX = 0
     currentX = 0
+  }
+
+  function incrementYear() {
+    yearCount += 1 // Incrementar el año
+    yearCountElement.textContent = yearCount // Actualizar el elemento en la UI
   }
 
   card.addEventListener("mousedown", handleMouseDown)

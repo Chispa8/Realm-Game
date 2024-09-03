@@ -55,7 +55,7 @@ export const cards = [
   },
   {
     //6
-    text: "Your coin's president propose you a confusing advice. Follow or not?",
+    text: "Your finance advisor makes a confusing suggestion to structure your money.",
     image: "./icons/influencer.png",
     next: { yes: 7, no: 8 },
     impact: { yes: { army: +15, money: -10 }, no: { people: -10 } },
