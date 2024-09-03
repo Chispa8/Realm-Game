@@ -51,14 +51,20 @@ export const cards = [
     text: "Peace has been restored. Give a reward to your people and army?",
     image: "./icons/peace.png",
     next: { yes: 3, no: 4 },
-    impact: { yes: { people: +20, army: -5 } },
+    impact: {
+      yes: { people: +10, army: +10, church: -5, money: -10 },
+      no: { people: -10, army: -10, money: +10 },
+    },
   },
   {
     //6
     text: "Your finance advisor makes a confusing suggestion to structure your money.",
     image: "./icons/influencer.png",
     next: { yes: 7, no: 8 },
-    impact: { yes: { army: +15, money: -10 }, no: { people: -10 } },
+    impact: {
+      yes: { army: +15, money: -15, people: -5 },
+      no: { people: +10, church: +5, money: +5 },
+    },
   },
   {
     //7
