@@ -80,4 +80,54 @@ export const cards = [
       no: { army: +10, people: +10, church: -10 },
     },
   },
+  {
+    //9
+    text: "Would it be a good idea celebrate a combat competition in your Coliseum?",
+    image: "./icons/medievalWar.png",
+    next: { yes: 8, no: 11 },
+    impact: {
+      yes: { army: -5, people: +10, money: -15 },
+      no: { army: +5, people: -10, money: +10 },
+    },
+  },
+  {
+    //10
+    text: "Your right hand wants a feast with your army to celebrate your wisdom.",
+    image: "./icons/feast.png",
+    next: { yes: 6, no: 13 },
+    impact: {
+      yes: { people: -10, money: -10, army: +10 },
+      no: { money: +10, people: +10, army: -10 },
+    },
+  },
+  {
+    //11
+    text: "The plebeians need more houses",
+    image: "./icons/hammer.png",
+    next: { yes: 12, no: 4 },
+    impact: {
+      yes: { people: +15, money: -15 },
+      no: { people: -15, money: +15 },
+    },
+  },
+  {
+    //12
+    text: "Your alchemist needs plebeians to do some shady experiments to improve your army...",
+    image: "./icons/alchemist.png",
+    next: { yes: 4, no: 1 },
+    impact: {
+      yes: { people: -10, army: +10 },
+      no: { people: +10, army: -10 },
+    },
+  },
+  {
+    //13 love faction to activate
+    text: "You are starting to think about having an heir... Choose your companion.",
+    image: "./icons/royalDance.png",
+    next: { yes: 3, no: 2 },
+    impact: {
+      yes: { army: +5, people: +5, church: +5, money: -5 },
+      no: { army: -5, people: -5, church: -5, money: +5 },
+    },
+  },
 ]

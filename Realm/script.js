@@ -38,8 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const imgElement = document.createElement("img")
     imgElement.src = cardData.image
     imgElement.alt = "Card Image"
-    imgElement.style.width = "70px"
-    imgElement.style.height = "70px"
+    imgElement.style.width = "8em"
+    imgElement.style.height = "8em"
     imgElement.classList.add("oscillating")
 
     // Crea un elemento de texto
@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function incrementYear() {
-    yearCount += 1 // Incrementar el año
+    yearCount += 1
     yearCountElement.textContent = yearCount // Actualizar el elemento en la UI
   }
 
