@@ -1,18 +1,11 @@
-import { cards } from "./cards.js"
+import { cards, factions } from "./cards_and_factions.js"
 import { ruler } from "./KQ_names.js"
-
-let factions = {
-  army: 75,
-  people: 75,
-  church: 75,
-  money: 75,
-  love: 0,
-}
+import { REWARDS } from "./items.js"
 
 let currentCardIndex = 0
 let startX = 0
 let currentX = 0
-let yearCount = 0 // Inicializamos el contador de años en 0
+let yearCount = 0
 
 document.addEventListener("DOMContentLoaded", () => {
   const randomRulerIndex = Math.floor(Math.random() * ruler.length)
@@ -98,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
       setTimeout(() => {
         updateFactions("yes") // Actualizar facciones con la decisión "yes"
         updateFactionDisplay() // Actualizar visualmente las barras después de "yes"
-        incrementYear() // Incrementar el contador de años
+        incrementYear()
         if (cards[currentCardIndex].next.yes !== undefined) {
           currentCardIndex = cards[currentCardIndex].next.yes
           showCard()
@@ -156,26 +149,31 @@ function updateFactions(decision) {
 }
 
 function updateFactionDisplay() {
-  updateFactionBar(document.getElementById("army-bar"), factions.army)
-  updateFactionBar(document.getElementById("people-bar"), factions.people)
-  updateFactionBar(document.getElementById("church-bar"), factions.church)
-  updateFactionBar(document.getElementById("money-bar"), factions.money)
+  updateFactionIcon("army-fill", factions.army)
+  updateFactionIcon("people-fill", factions.people)
+  updateFactionIcon("church-fill", factions.church)
+  updateFactionIcon("money-fill", factions.money)
 
   if (factions.love > 0) {
-    updateFactionBar(document.getElementById("love-bar"), factions.love)
+    updateFactionIcon("love-fill", factions.love)
     document.getElementById("love-score").style.display = "block"
   } else {
     document.getElementById("love-score").style.display = "none"
   }
 }
 
-function updateFactionBar(factionBar, value) {
-  factionBar.style.setProperty("--fill", `${value}%`)
-  if (value < 20) {
-    factionBar.style.backgroundColor = "red"
+function updateFactionIcon(fillId, value) {
+  const fillElement = document.getElementById(fillId)
+  fillElement.style.height = `${value}%`
+
+  //Change color based on the faction's value
+  if (value < 25) {
+    fillElement.style.backgroundColor = "rgba(255, 0, 0, 0.5)"
   } else if (value < 50) {
-    factionBar.style.backgroundColor = "orange"
+    fillElement.style.backgroundColor = "rgba(255, 165, 0, 0.5)"
+  } else if (value < 75) {
+    fillElement.style.backgroundColor = "rgba(255, 255, 0, 0.5)"
   } else {
-    factionBar.style.backgroundColor = "green"
+    fillElement.style.backgroundColor = "rgba(0, 255, 0, 0.5)"
   }
 }

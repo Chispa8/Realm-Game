@@ -1,3 +1,10 @@
+export let factions = {
+  army: 75,
+  people: 75,
+  church: 75,
+  money: 75,
+  love: 0,
+}
 export const cards = [
   {
     // 0
