@@ -1,11 +1,12 @@
-import { cards, factions } from "./cards_and_factions.js"
+import { cards, factions } from "./factions_and_cards.js"
 import { ruler } from "./KQ_names.js"
-import { REWARDS } from "./items.js"
+import { REWARDS, specialCards } from "./items_and_cards.js"
 
 let currentCardIndex = 0
 let startX = 0
 let currentX = 0
 let yearCount = 0
+let cardsSinceLastSpecial = 0
 
 document.addEventListener("DOMContentLoaded", () => {
   const randomRulerIndex = Math.floor(Math.random() * ruler.length)
@@ -13,21 +14,30 @@ document.addEventListener("DOMContentLoaded", () => {
   const card = document.getElementById("card")
   const acceptIndicator = document.getElementById("accept-indicator")
   const rejectIndicator = document.getElementById("reject-indicator")
-  const yearCountElement = document.getElementById("year-count") // Referencia al contador de años
+  const yearCountElement = document.getElementById("year-count")
 
   const acceptSound = new Audio("sounds/accept.mp3")
   const rejectSound = new Audio("sounds/reject.mp3")
+  const gameOverSound = new Audio("sounds/lose.mp3")
 
-  // Actualiza la información del gobernante con el índice aleatorio
   updateRulerDisplay(randomRulerIndex)
 
   function showCard() {
+    cardsSinceLastSpecial++
+    console.log(`Cards since last special: ${cardsSinceLastSpecial}`)
+
+    if (cardsSinceLastSpecial >= 5 && Math.random() < 0.3) {
+      showSpecialCard()
+    } else {
+      showRegularCard()
+    }
+  }
+
+  function showRegularCard() {
     const cardData = cards[currentCardIndex]
 
-    // Limpia la carta de contenido anterior
     card.innerHTML = ""
 
-    // Crea un elemento de imagen
     const imgElement = document.createElement("img")
     imgElement.src = cardData.image
     imgElement.alt = "Card Image"
@@ -35,19 +45,98 @@ document.addEventListener("DOMContentLoaded", () => {
     imgElement.style.height = "8em"
     imgElement.classList.add("oscillating")
 
-    // Crea un elemento de texto
     const textElement = document.createElement("p")
     textElement.textContent = cardData.text
 
-    // Agrega la imagen y el texto al contenedor de la carta
     card.appendChild(imgElement)
     card.appendChild(textElement)
 
-    // Restaura el estado inicial de la carta
     card.style.transform = `translateX(0px) rotate(0deg)`
     card.style.opacity = 1
     acceptIndicator.style.opacity = 0
     rejectIndicator.style.opacity = 0
+
+    // Remove any existing click event listeners
+    card.onclick = null
+  }
+
+  function showSpecialCard() {
+    console.log("Showing special card")
+    const specialCard =
+      specialCards[Math.floor(Math.random() * specialCards.length)]
+
+    card.innerHTML = ""
+
+    // Aplicar los mismos estilos que las cartas regulares
+    card.style.backgroundColor = "#d09035"
+    card.style.borderRadius = "10px"
+    card.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.2)"
+    card.style.display = "flex"
+    card.style.flexDirection = "column"
+    card.style.justifyContent = "center"
+    card.style.alignItems = "center"
+    card.style.fontSize = "1em"
+    card.style.fontWeight = "bold"
+    card.style.color = "#25221f"
+
+    const imgElement = document.createElement("img")
+    imgElement.src = specialCard.image
+    imgElement.alt = "Special Card Image"
+    imgElement.style.width = "8em"
+    imgElement.style.height = "8em"
+    imgElement.classList.add("oscillating")
+
+    const textElement = document.createElement("p")
+    textElement.textContent = specialCard.text
+    textElement.style.margin = "1em 0"
+    textElement.style.textAlign = "center"
+
+    card.appendChild(imgElement)
+    card.appendChild(textElement)
+
+    // Asegurarse de que la carta sea visible y esté en la posición correcta
+    card.style.transform = `translateX(0px) rotate(0deg)`
+    card.style.opacity = 1
+
+    card.onclick = () => {
+      acquireItem(specialCard.reward)
+      cardsSinceLastSpecial = 0
+      showCard()
+    }
+  }
+
+  function acquireItem(itemName) {
+    console.log(`Acquiring item: ${itemName}`)
+    REWARDS[itemName].count++
+    updateItemDisplay(itemName)
+  }
+
+  function updateItemDisplay(itemName) {
+    const itemElement = document.getElementById(`${itemName}-item`)
+    const countElement = itemElement.querySelector(".item-count")
+    countElement.textContent = REWARDS[itemName].count
+  }
+
+  document.querySelectorAll(".item").forEach((item) => {
+    item.addEventListener("click", () => {
+      const itemName = item.id.split("-")[0]
+      useItem(itemName)
+    })
+  })
+
+  function useItem(itemName) {
+    if (REWARDS[itemName].count > 0) {
+      REWARDS[itemName].count--
+      updateItemDisplay(itemName)
+
+      const effect = REWARDS[itemName].effect
+      for (const faction in effect) {
+        factions[faction] += effect[faction]
+        if (factions[faction] > 100) factions[faction] = 100
+      }
+
+      updateFactionDisplay()
+    }
   }
 
   function updateRulerDisplay(index) {
@@ -72,46 +161,61 @@ document.addEventListener("DOMContentLoaded", () => {
     const rotation = currentX / 20
     card.style.transform = `translateX(${currentX}px) rotate(${rotation}deg)`
 
+    const impactsYes = cards[currentCardIndex].impact.yes
+    const impactsNo = cards[currentCardIndex].impact.no
+
     if (currentX > 0) {
       acceptIndicator.style.opacity = Math.min(currentX / 100, 1)
       rejectIndicator.style.opacity = 0
+      document.getElementById("accept-effects").innerHTML =
+        formatImpacts(impactsYes)
+      document.getElementById("reject-effects").innerHTML = ""
     } else {
       rejectIndicator.style.opacity = Math.min(-currentX / 100, 1)
       acceptIndicator.style.opacity = 0
+      document.getElementById("reject-effects").innerHTML =
+        formatImpacts(impactsNo)
+      document.getElementById("accept-effects").innerHTML = ""
     }
+  }
+
+  function formatImpacts(impacts) {
+    let effectsText = ""
+    for (const faction in impacts) {
+      const impactValue = impacts[faction]
+      const sign = impactValue > 0 ? "+" : ""
+      effectsText += `<p>${faction}: ${sign}${impactValue}</p>`
+    }
+    return effectsText
   }
 
   function handleMouseUp() {
     card.style.transition = "transform 0.3s ease, opacity 0.3s ease"
 
     if (currentX > 100) {
-      acceptSound.play() // Reproducir sonido de aceptar
+      acceptSound.play()
       card.style.transform = `translateX(1000px) rotate(30deg)`
       card.style.opacity = 0
       setTimeout(() => {
-        updateFactions("yes") // Actualizar facciones con la decisión "yes"
-        updateFactionDisplay() // Actualizar visualmente las barras después de "yes"
+        updateFactions("yes")
+        updateFactionDisplay()
         incrementYear()
         if (cards[currentCardIndex].next.yes !== undefined) {
           currentCardIndex = cards[currentCardIndex].next.yes
           showCard()
-        } else {
-          // Lógica para manejar el final del juego o la falta de siguiente carta
         }
       }, 300)
     } else if (currentX < -100) {
-      rejectSound.play() // Reproducir sonido de rechazar
+      rejectSound.play()
       card.style.transform = `translateX(-1000px) rotate(-30deg)`
       card.style.opacity = 0
       setTimeout(() => {
-        updateFactions("no") // Actualizar facciones con la decisión "no"
-        updateFactionDisplay() // Actualizar visualmente las barras después de "no"
-        incrementYear() // Incrementar el contador de años
+        updateFactions("no")
+        updateFactionDisplay()
+        incrementYear()
         if (cards[currentCardIndex].next.no !== undefined) {
           currentCardIndex = cards[currentCardIndex].next.no
           showCard()
-        } else {
-          // Lógica para manejar el final del juego o la falta de siguiente carta
         }
       }, 300)
     } else {
@@ -126,7 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function incrementYear() {
     yearCount += 1
-    yearCountElement.textContent = yearCount // Actualizar el elemento en la UI
+    yearCountElement.textContent = yearCount
   }
 
   card.addEventListener("mousedown", handleMouseDown)
@@ -134,17 +238,17 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("mouseup", handleMouseUp)
 
   showCard()
-  updateFactionDisplay() // Asegúrate de que las barras se muestren correctamente desde el principio
+  updateFactionDisplay()
 })
 
 function updateFactions(decision) {
   const impacts = cards[currentCardIndex].impact[decision]
-  if (!impacts) return // Salir si no hay impactos definidos
+  if (!impacts) return
 
   for (const faction in impacts) {
     factions[faction] += impacts[faction]
-    if (factions[faction] > 100) factions[faction] = 100 // Limitar al 100%
-    if (factions[faction] < 0) factions[faction] = 0 // Limitar al 0%
+    if (factions[faction] > 100) factions[faction] = 100
+    if (factions[faction] < 0) factions[faction] = 0
   }
 }
 
@@ -166,7 +270,6 @@ function updateFactionIcon(fillId, value) {
   const fillElement = document.getElementById(fillId)
   fillElement.style.height = `${value}%`
 
-  //Change color based on the faction's value
   if (value < 25) {
     fillElement.style.backgroundColor = "rgba(255, 0, 0, 0.5)"
   } else if (value < 50) {

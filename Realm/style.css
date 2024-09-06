@@ -127,8 +127,8 @@ body {
 }
 
 .card {
-  width: 35%;
-  height: 70%;
+  width: 40%;
+  height: 75%;
   background-color: #d09035;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -192,4 +192,38 @@ body {
 
 .oscillating {
   animation: oscillate 1.5s infinite ease-in-out;
+}
+
+#item-menu {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px;
+}
+
+.item {
+  position: relative;
+  cursor: pointer;
+}
+
+.item img {
+  width: 50px;
+  height: 50px;
+}
+
+.item-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: rgb(205, 160, 71);
+  color: rgb(49, 46, 46);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
 }

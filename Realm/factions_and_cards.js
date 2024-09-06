@@ -39,8 +39,8 @@ export const cards = [
     image: "./icons/hammer.png",
     next: { yes: 6, no: 8 },
     impact: {
-      yes: { army: +20, money: +15 },
-      no: { people: -20, church: -10, army: +5, money: +5 },
+      yes: { church: +20, money: -15 },
+      no: { church: -10, money: +10 },
     },
   },
   {
@@ -59,7 +59,7 @@ export const cards = [
     image: "./icons/peace.png",
     next: { yes: 3, no: 4 },
     impact: {
-      yes: { people: +10, army: +10, church: -5, money: -10 },
+      yes: { people: +10, army: +10, church: -10, money: -10 },
       no: { people: -10, army: -10, money: +10 },
     },
   },
