@@ -9,6 +9,14 @@ let yearCount = 0
 let cardsSinceLastSpecial = 0
 
 document.addEventListener("DOMContentLoaded", () => {
+  const startScreen = document.getElementById("start-screen")
+  const gameScreen = document.getElementById("game-screen")
+  const playButton = document.getElementById("play-button")
+  const musicButton = document.getElementById("music-button") // Botón de música
+  const backgroundMusic = document.getElementById("background-music")
+  const volumeSlider = document.getElementById("volume-slider")
+  const volumeIcon = document.getElementById("volume-icon")
+
   const randomRulerIndex = Math.floor(Math.random() * ruler.length)
 
   const card = document.getElementById("card")
@@ -20,7 +28,68 @@ document.addEventListener("DOMContentLoaded", () => {
   const rejectSound = new Audio("sounds/reject.mp3")
   const gameOverSound = new Audio("sounds/lose.mp3")
 
+  let isMuted = false
+  let isPlaying = false
+
+  // Función para manejar la música
+  function toggleMusic() {
+    if (!isPlaying) {
+      backgroundMusic.volume = parseFloat(volumeSlider.value)
+      backgroundMusic.play().catch((error) => {
+        console.error("Error al reproducir la música:", error)
+      })
+      musicButton.textContent = "Detener música"
+    } else {
+      backgroundMusic.pause()
+      musicButton.textContent = "Iniciar música"
+    }
+    isPlaying = !isPlaying
+  }
+
+  // Evento para el botón de música
+  musicButton.addEventListener("click", toggleMusic)
+
+  playButton.addEventListener("click", () => {
+    startScreen.style.display = "none"
+    gameScreen.style.display = "block"
+    startGame()
+  })
+
+  // Control de volumen
+  volumeSlider.addEventListener("input", (e) => {
+    const volume = parseFloat(e.target.value)
+    backgroundMusic.volume = volume
+    updateVolumeIcon(volume)
+  })
+
+  volumeIcon.addEventListener("click", toggleMute)
+
+  function updateVolumeIcon(volume) {
+    if (volume === 0) {
+      volumeIcon.textContent = "🔇"
+    } else if (volume < 0.5) {
+      volumeIcon.textContent = "🔉"
+    } else {
+      volumeIcon.textContent = "🔊"
+    }
+  }
+
+  function toggleMute() {
+    isMuted = !isMuted
+    backgroundMusic.muted = isMuted
+    if (isMuted) {
+      volumeIcon.textContent = "🔇"
+    } else {
+      updateVolumeIcon(parseFloat(volumeSlider.value))
+    }
+  }
+
   updateRulerDisplay(randomRulerIndex)
+
+  function startGame() {
+    showCard()
+    updateFactionDisplay()
+  }
 
   function showCard() {
     cardsSinceLastSpecial++
@@ -54,15 +123,11 @@ document.addEventListener("DOMContentLoaded", () => {
     card.style.transform = `translateX(0px) rotate(0deg)`
     card.style.opacity = 1
 
-    // Ocultar los indicadores de aceptar y rechazar
     document.getElementById("accept-indicator").style.opacity = 0
     document.getElementById("reject-indicator").style.opacity = 0
-
-    // Limpiar los efectos de aceptar y rechazar
     document.getElementById("accept-effects").innerHTML = ""
     document.getElementById("reject-effects").innerHTML = ""
 
-    // Remove any existing click event listeners
     card.onclick = null
   }
 
@@ -73,7 +138,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     card.innerHTML = ""
 
-    // Aplicar los mismos estilos que las cartas regulares
     card.style.backgroundColor = "#d09035"
     card.style.borderRadius = "10px"
     card.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.2)"
@@ -100,15 +164,11 @@ document.addEventListener("DOMContentLoaded", () => {
     card.appendChild(imgElement)
     card.appendChild(textElement)
 
-    // Asegurarse de que la carta sea visible y esté en la posición correcta
     card.style.transform = `translateX(0px) rotate(0deg)`
     card.style.opacity = 1
 
-    // Ocultar los indicadores de aceptar y rechazar
     document.getElementById("accept-indicator").style.opacity = 0
     document.getElementById("reject-indicator").style.opacity = 0
-
-    // Limpiar los efectos de aceptar y rechazar
     document.getElementById("accept-effects").innerHTML = ""
     document.getElementById("reject-effects").innerHTML = ""
 
@@ -250,9 +310,6 @@ document.addEventListener("DOMContentLoaded", () => {
   card.addEventListener("mousedown", handleMouseDown)
   document.addEventListener("mousemove", handleMouseMove)
   document.addEventListener("mouseup", handleMouseUp)
-
-  showCard()
-  updateFactionDisplay()
 })
 
 function updateFactions(decision) {
