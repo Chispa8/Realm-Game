@@ -53,8 +53,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     card.style.transform = `translateX(0px) rotate(0deg)`
     card.style.opacity = 1
-    acceptIndicator.style.opacity = 0
-    rejectIndicator.style.opacity = 0
+
+    // Ocultar los indicadores de aceptar y rechazar
+    document.getElementById("accept-indicator").style.opacity = 0
+    document.getElementById("reject-indicator").style.opacity = 0
+
+    // Limpiar los efectos de aceptar y rechazar
+    document.getElementById("accept-effects").innerHTML = ""
+    document.getElementById("reject-effects").innerHTML = ""
 
     // Remove any existing click event listeners
     card.onclick = null
@@ -97,6 +103,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // Asegurarse de que la carta sea visible y esté en la posición correcta
     card.style.transform = `translateX(0px) rotate(0deg)`
     card.style.opacity = 1
+
+    // Ocultar los indicadores de aceptar y rechazar
+    document.getElementById("accept-indicator").style.opacity = 0
+    document.getElementById("reject-indicator").style.opacity = 0
+
+    // Limpiar los efectos de aceptar y rechazar
+    document.getElementById("accept-effects").innerHTML = ""
+    document.getElementById("reject-effects").innerHTML = ""
 
     card.onclick = () => {
       acquireItem(specialCard.reward)
