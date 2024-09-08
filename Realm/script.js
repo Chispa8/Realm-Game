@@ -1,18 +1,21 @@
 import { cards, factions } from "./factions_and_cards.js"
 import { ruler } from "./KQ_names.js"
 import { REWARDS, specialCards } from "./items_and_cards.js"
+import goals from "./goals.js"
 
 let currentCardIndex = 0
 let startX = 0
 let currentX = 0
 let yearCount = 0
 let cardsSinceLastSpecial = 0
+const numberOfGoals = 3 // Number of goals to display per round
+let currentGoals = []
 
 document.addEventListener("DOMContentLoaded", () => {
   const startScreen = document.getElementById("start-screen")
   const gameScreen = document.getElementById("game-screen")
   const playButton = document.getElementById("play-button")
-  const musicButton = document.getElementById("music-button") // Botón de música
+  const musicButton = document.getElementById("music-button")
   const backgroundMusic = document.getElementById("background-music")
   const volumeSlider = document.getElementById("volume-slider")
   const volumeIcon = document.getElementById("volume-icon")
@@ -31,7 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let isMuted = false
   let isPlaying = false
 
-  // Función para manejar la música
   function toggleMusic() {
     if (!isPlaying) {
       backgroundMusic.volume = parseFloat(volumeSlider.value)
@@ -46,7 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
     isPlaying = !isPlaying
   }
 
-  // Evento para el botón de música
   musicButton.addEventListener("click", toggleMusic)
 
   playButton.addEventListener("click", () => {
@@ -55,7 +56,6 @@ document.addEventListener("DOMContentLoaded", () => {
     startGame()
   })
 
-  // Control de volumen
   volumeSlider.addEventListener("input", (e) => {
     const volume = parseFloat(e.target.value)
     backgroundMusic.volume = volume
@@ -87,6 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateRulerDisplay(randomRulerIndex)
 
   function startGame() {
+    initializeGoals() // Initialize goals when starting the game
     showCard()
     updateFactionDisplay()
   }
@@ -310,6 +311,52 @@ document.addEventListener("DOMContentLoaded", () => {
   card.addEventListener("mousedown", handleMouseDown)
   document.addEventListener("mousemove", handleMouseMove)
   document.addEventListener("mouseup", handleMouseUp)
+
+  function initializeGoals() {
+    currentGoals = getRandomGoals(numberOfGoals)
+    displayGoals()
+  }
+
+  function getRandomGoals(count) {
+    const shuffled = [...goals].sort(() => 0.5 - Math.random())
+    return shuffled.slice(0, count)
+  }
+
+  function displayGoals() {
+    const goalsList = document.getElementById("goals-list")
+    goalsList.innerHTML = ""
+
+    currentGoals.forEach((goal) => {
+      const li = document.createElement("li")
+      li.innerHTML = `
+        <span class="goal-icon">${goal.icon}</span>
+        <div class="goal-content">
+          <h3>${goal.title}</h3>
+          <p>${goal.description}</p>
+        </div>
+        <input type="checkbox" class="goal-checkbox" data-goal-id="${goal.id}">
+      `
+      goalsList.appendChild(li)
+    })
+
+    document.querySelectorAll(".goal-checkbox").forEach((checkbox) => {
+      checkbox.addEventListener("change", (e) => {
+        const goalId = parseInt(e.target.getAttribute("data-goal-id"))
+        updateGoalStatus(goalId, e.target.checked)
+      })
+    })
+  }
+
+  function updateGoalStatus(goalId, completed) {
+    const goal = currentGoals.find((g) => g.id === goalId)
+    if (goal) {
+      goal.completed = completed
+      // Add more logic here, such as updating the player's score
+    }
+  }
+
+  // Remove this line as initializeGoals is now called in startGame
+  // initializeGoals()
 })
 
 function updateFactions(decision) {

@@ -16,75 +16,82 @@
 
     <div id="game-screen" style="display: none">
       <div id="game-container">
-        <div class="ruler-name">
-          <img id="ruler-image" src="" alt="Ruler Image" />
-          <div id="ruler-details">
-            <h3 id="ruler-name"></h3>
-            <p id="ruler-country"></p>
-          </div>
-        </div>
-        <div id="scores">
-          <div class="score">
-            <div class="icon-container">
-              <img src="./icons/warrior.png" alt="Army" class="icon" />
-              <div class="icon-fill" id="army-fill"></div>
+        <div class="left-column">
+          <div class="ruler-name">
+            <img id="ruler-image" src="" alt="Ruler Image" />
+            <div id="ruler-details">
+              <h3 id="ruler-name"></h3>
+              <p id="ruler-country"></p>
             </div>
           </div>
-          <div class="score">
-            <div class="icon-container">
-              <img src="./icons/town.png" alt="People" class="icon" />
-              <div class="icon-fill" id="people-fill"></div>
+          <div id="goals-menu">
+            <h2>Round Goals</h2>
+            <ul id="goals-list"></ul>
+          </div>
+        </div>
+        <div class="main-game-area">
+          <div id="scores">
+            <div class="score">
+              <div class="icon-container">
+                <img src="./icons/warrior.png" alt="Army" class="icon" />
+                <div class="icon-fill" id="army-fill"></div>
+              </div>
+            </div>
+            <div class="score">
+              <div class="icon-container">
+                <img src="./icons/town.png" alt="People" class="icon" />
+                <div class="icon-fill" id="people-fill"></div>
+              </div>
+            </div>
+            <div class="score">
+              <div class="icon-container">
+                <img src="./icons/church.png" alt="Church" class="icon" />
+                <div class="icon-fill" id="church-fill"></div>
+              </div>
+            </div>
+            <div class="score">
+              <div class="icon-container">
+                <img src="./icons/coins.png" alt="Money" class="icon" />
+                <div class="icon-fill" id="money-fill"></div>
+              </div>
+            </div>
+            <div class="score" id="love-score" style="display: none">
+              <div class="icon-container">
+                <img src="./icons/love.png" alt="Love" class="icon" />
+                <div class="icon-fill" id="love-fill"></div>
+              </div>
             </div>
           </div>
-          <div class="score">
-            <div class="icon-container">
-              <img src="./icons/church.png" alt="Church" class="icon" />
-              <div class="icon-fill" id="church-fill"></div>
+          <div class="years">Year <span id="year-count">0</span></div>
+          <div id="card-container">
+            <div id="accept-indicator" class="indicator">
+              Accept
+              <div id="accept-effects"></div>
+            </div>
+            <div id="reject-indicator" class="indicator">
+              Reject
+              <div id="reject-effects"></div>
+            </div>
+            <div id="card" class="card"></div>
+          </div>
+          <div id="item-menu">
+            <div class="item" id="sword-item">
+              <img src="./icons/sword.png" alt="Sword" />
+              <span class="item-count">0</span>
+            </div>
+            <div class="item" id="crystalBall-item">
+              <img src="./icons/crystal-ball.png" alt="Crystal Ball" />
+              <span class="item-count">0</span>
+            </div>
+            <div class="item" id="potion-item">
+              <img src="./icons/potion.png" alt="Potion" />
+              <span class="item-count">0</span>
+            </div>
+            <div class="item" id="chest-item">
+              <img src="./icons/chest.png" alt="Chest" />
+              <span class="item-count">0</span>
             </div>
           </div>
-          <div class="score">
-            <div class="icon-container">
-              <img src="./icons/coins.png" alt="Money" class="icon" />
-              <div class="icon-fill" id="money-fill"></div>
-            </div>
-          </div>
-          <div class="score" id="love-score" style="display: none">
-            <div class="icon-container">
-              <img src="./icons/love.png" alt="Love" class="icon" />
-              <div class="icon-fill" id="love-fill"></div>
-            </div>
-          </div>
-        </div>
-        <div class="years">Year <span id="year-count">0</span></div>
-        <div id="card-container">
-          <div id="accept-indicator" class="indicator">
-            Accept
-            <div id="accept-effects"></div>
-          </div>
-          <div id="reject-indicator" class="indicator">
-            Reject
-            <div id="reject-effects"></div>
-          </div>
-          <div id="card" class="card"></div>
-        </div>
-      </div>
-      <div id="item-menu">
-        <div class="item" id="sword-item">
-          <img src="./icons/sword.png" alt="Sword" />
-          <span class="item-count">0</span>
-        </div>
-        <div class="item" id="crystalBall-item">
-          <img src="./icons/crystal-ball.png" alt="Crystal Ball" />
-          <span class="item-count">0</span>
-        </div>
-        <div class="item" id="potion-item">
-          <img src="./icons/potion.png" alt="Potion" />
-          <span class="item-count">0</span>
-        </div>
-
-        <div class="item" id="chest-item">
-          <img src="./icons/chest.png" alt="Chest" />
-          <span class="item-count">0</span>
         </div>
       </div>
     </div>
@@ -102,7 +109,7 @@
     </div>
 
     <audio id="background-music" loop>
-      <source src="./sounds/initial-music.mp3" type="audio/mp3 " />
+      <source src="./sounds/initial-music.mp3" type="audio/mp3" />
     </audio>
   </body>
 </html>
