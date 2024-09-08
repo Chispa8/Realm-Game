@@ -47,10 +47,10 @@ document.addEventListener("DOMContentLoaded", () => {
       backgroundMusic.play().catch((error) => {
         console.error("Error al reproducir la música:", error)
       })
-      musicButton.textContent = "Detener música"
+      musicButton.textContent = "Stop music"
     } else {
       backgroundMusic.pause()
-      musicButton.textContent = "Iniciar música"
+      musicButton.textContent = "Play music"
     }
     isPlaying = !isPlaying
   }
