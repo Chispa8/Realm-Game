@@ -69,7 +69,7 @@ export const cards = [
     image: "./icons/influencer.png",
     next: { yes: 7, no: 8 },
     impact: {
-      yes: { army: +15, money: -15, people: -5 },
+      yes: { army: +10, money: -10, people: -5 },
       no: { people: +10, church: +5, money: +5 },
     },
   },
@@ -79,8 +79,8 @@ export const cards = [
     image: "./icons/help.png",
     next: { yes: 9, no: 10 },
     impact: {
-      yes: { army: +10, money: -15 },
-      no: { church: -5, people: -10 },
+      yes: { church: +10, people: -10, money: -10 },
+      no: { church: -10, people: +10, money: +10 },
     },
   },
   {

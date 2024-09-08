@@ -107,6 +107,10 @@ document.addEventListener("DOMContentLoaded", () => {
       showSpecialCard()
     } else {
       showRegularCard()
+      // Re-enable dragging for regular cards
+      card.onmousedown = handleMouseDown
+      document.onmousemove = handleMouseMove
+      document.onmouseup = handleMouseUp
     }
   }
 
@@ -135,8 +139,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("reject-indicator").style.opacity = 0
     document.getElementById("accept-effects").innerHTML = ""
     document.getElementById("reject-effects").innerHTML = ""
-
-    card.onclick = null
   }
 
   function showSpecialCard() {
@@ -169,22 +171,34 @@ document.addEventListener("DOMContentLoaded", () => {
     textElement.style.margin = "1em 0"
     textElement.style.textAlign = "center"
 
+    const acceptButton = document.createElement("button")
+    acceptButton.textContent = "Accept Item"
+    acceptButton.style.width = "200px"
+    acceptButton.style.height = "50px"
+    acceptButton.classList.add("special-card-button")
+    acceptButton.onclick = () => {
+      acquireItem(specialCard.reward)
+      cardsSinceLastSpecial = 0
+      showCard()
+    }
+
     card.appendChild(imgElement)
     card.appendChild(textElement)
+    card.appendChild(acceptButton)
 
     card.style.transform = `translateX(0px) rotate(0deg)`
     card.style.opacity = 1
 
+    // Remove faction impact displays for special cards
     document.getElementById("accept-indicator").style.opacity = 0
     document.getElementById("reject-indicator").style.opacity = 0
     document.getElementById("accept-effects").innerHTML = ""
     document.getElementById("reject-effects").innerHTML = ""
 
-    card.onclick = () => {
-      acquireItem(specialCard.reward)
-      cardsSinceLastSpecial = 0
-      showCard()
-    }
+    // Disable dragging for special cards
+    card.onmousedown = null
+    document.onmousemove = null
+    document.onmouseup = null
   }
 
   function acquireItem(itemName) {
@@ -233,6 +247,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function handleMouseDown(event) {
+    if (event.target.classList.contains("special-card-button")) {
+      // If the clicked element is the special card button, don't initiate dragging
+      return
+    }
     startX = event.clientX
     card.style.transition = "none"
   }
@@ -243,21 +261,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const rotation = currentX / 20
     card.style.transform = `translateX(${currentX}px) rotate(${rotation}deg)`
 
-    const impactsYes = cards[currentCardIndex].impact.yes
-    const impactsNo = cards[currentCardIndex].impact.no
+    const cardData = cards[currentCardIndex]
+    if (cardData) {
+      // Check if cardData exists (it won't for special cards)
+      const impactsYes = cardData.impact.yes
+      const impactsNo = cardData.impact.no
 
-    if (currentX > 0) {
-      acceptIndicator.style.opacity = Math.min(currentX / 100, 1)
-      rejectIndicator.style.opacity = 0
-      document.getElementById("accept-effects").innerHTML =
-        formatImpacts(impactsYes)
-      document.getElementById("reject-effects").innerHTML = ""
-    } else {
-      rejectIndicator.style.opacity = Math.min(-currentX / 100, 1)
-      acceptIndicator.style.opacity = 0
-      document.getElementById("reject-effects").innerHTML =
-        formatImpacts(impactsNo)
-      document.getElementById("accept-effects").innerHTML = ""
+      if (currentX > 0) {
+        acceptIndicator.style.opacity = Math.min(currentX / 100, 1)
+        rejectIndicator.style.opacity = 0
+        document.getElementById("accept-effects").innerHTML =
+          formatImpacts(impactsYes)
+        document.getElementById("reject-effects").innerHTML = ""
+      } else {
+        rejectIndicator.style.opacity = Math.min(-currentX / 100, 1)
+        acceptIndicator.style.opacity = 0
+        document.getElementById("reject-effects").innerHTML =
+          formatImpacts(impactsNo)
+        document.getElementById("accept-effects").innerHTML = ""
+      }
     }
   }
 
@@ -430,7 +452,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 achieveGoal(goal)
               }
             } else {
-              peopleMaxScoreYears = 0
+              peopleMaxSc
+              oreYears = 0
             }
             break
         }
