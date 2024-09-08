@@ -10,6 +10,13 @@ let yearCount = 0
 let cardsSinceLastSpecial = 0
 const numberOfGoals = 3 // Number of goals to display per round
 let currentGoals = []
+let achievedGoals = new Set()
+
+// New variables for tracking goal progress
+let churchMaxScoreYears = 0
+let peopleMaxScoreYears = 0
+let armyMaxScoreYears = 0
+let treasuryBalanceYears = 0
 
 document.addEventListener("DOMContentLoaded", () => {
   const startScreen = document.getElementById("start-screen")
@@ -87,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateRulerDisplay(randomRulerIndex)
 
   function startGame() {
-    initializeGoals() // Initialize goals when starting the game
+    initializeGoals()
     showCard()
     updateFactionDisplay()
   }
@@ -275,6 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateFactions("yes")
         updateFactionDisplay()
         incrementYear()
+        checkGoals()
         if (cards[currentCardIndex].next.yes !== undefined) {
           currentCardIndex = cards[currentCardIndex].next.yes
           showCard()
@@ -288,6 +296,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateFactions("no")
         updateFactionDisplay()
         incrementYear()
+        checkGoals()
         if (cards[currentCardIndex].next.no !== undefined) {
           currentCardIndex = cards[currentCardIndex].next.no
           showCard()
@@ -334,29 +343,131 @@ document.addEventListener("DOMContentLoaded", () => {
           <h3>${goal.title}</h3>
           <p>${goal.description}</p>
         </div>
-        <input type="checkbox" class="goal-checkbox" data-goal-id="${goal.id}">
+        <span class="goal-checkmark" data-goal-id="${goal.id}">${
+        achievedGoals.has(goal.id) ? "✔️" : ""
+      }</span>
       `
       goalsList.appendChild(li)
     })
+  }
 
-    document.querySelectorAll(".goal-checkbox").forEach((checkbox) => {
-      checkbox.addEventListener("change", (e) => {
-        const goalId = parseInt(e.target.getAttribute("data-goal-id"))
-        updateGoalStatus(goalId, e.target.checked)
-      })
+  function checkGoals() {
+    currentGoals.forEach((goal) => {
+      if (!achievedGoals.has(goal.id)) {
+        switch (goal.id) {
+          case 1:
+          case 6:
+          case 12:
+            if (yearCount >= parseInt(goal.description.match(/\d+/)[0])) {
+              achieveGoal(goal)
+            }
+            break
+          case 2:
+          case 8:
+          case 11:
+            if (factions.church === 100) {
+              churchMaxScoreYears++
+              if (
+                churchMaxScoreYears >=
+                parseInt(goal.description.match(/\d+/)[0])
+              ) {
+                achieveGoal(goal)
+              }
+            } else {
+              churchMaxScoreYears = 0
+            }
+            break
+          case 3:
+          case 7:
+          case 10:
+            if (factions.money >= 100) {
+              treasuryBalanceYears++
+              if (
+                treasuryBalanceYears >=
+                parseInt(goal.description.match(/\d+/)[0])
+              ) {
+                achieveGoal(goal)
+              }
+            } else {
+              treasuryBalanceYears = 0
+            }
+            break
+          case 4:
+          case 14:
+          case 15:
+            if (factions.army === 100) {
+              armyMaxScoreYears++
+              if (
+                armyMaxScoreYears >= parseInt(goal.description.match(/\d+/)[0])
+              ) {
+                achieveGoal(goal)
+              }
+            } else {
+              armyMaxScoreYears = 0
+            }
+            break
+          case 5:
+          case 9:
+            if (factions.people === 100) {
+              peopleMaxScoreYears++
+              if (
+                peopleMaxScoreYears >=
+                parseInt(goal.description.match(/\d+/)[0])
+              ) {
+                achieveGoal(goal)
+              }
+            } else {
+              peopleMaxScoreYears = 0
+            }
+            break
+          case 13:
+            if (factions.people === 100 && factions.army === 100) {
+              peopleMaxScoreYears++
+              if (
+                peopleMaxScoreYears >=
+                parseInt(goal.description.match(/\d+/)[0])
+              ) {
+                achieveGoal(goal)
+              }
+            } else {
+              peopleMaxScoreYears = 0
+            }
+            break
+        }
+      }
     })
   }
 
-  function updateGoalStatus(goalId, completed) {
-    const goal = currentGoals.find((g) => g.id === goalId)
-    if (goal) {
-      goal.completed = completed
-      // Add more logic here, such as updating the player's score
-    }
+  function achieveGoal(goal) {
+    achievedGoals.add(goal.id)
+    displayGoals()
+    showAlert(`Goal Achieved: ${goal.title}`)
   }
 
-  // Remove this line as initializeGoals is now called in startGame
-  // initializeGoals()
+  function showAlert(message) {
+    const alertElement = document.createElement("div")
+    alertElement.innerHTML = `
+      <div class="alert-content">
+        <h2>Achievement Unlocked!</h2>
+        <p>${message}</p>
+        <button class="close-alert">Close</button>
+      </div>
+    `
+    alertElement.className = "custom-alert"
+    document.body.appendChild(alertElement)
+
+    const closeButton = alertElement.querySelector(".close-alert")
+    closeButton.addEventListener("click", () => {
+      alertElement.remove()
+    })
+
+    // Optional: Automatically close the alert after 5 seconds
+    setTimeout(() => {
+      if (document.body.contains(alertElement)) {
+        alertElement.remove()
+      }
+    }, 5000)
+  }
 })
 
 function updateFactions(decision) {
