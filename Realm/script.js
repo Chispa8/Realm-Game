@@ -8,6 +8,7 @@ let startX = 0
 let currentX = 0
 let yearCount = 0
 let cardsSinceLastSpecial = 0
+let isSpecialCard = false
 let currentGoals = []
 let achievedGoals = new Set()
 let churchMaxScoreYears = 0
@@ -105,16 +106,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     cardsSinceLastSpecial++
-    console.log(`Cards since last special: ${cardsSinceLastSpecial}`)
+    //console.log(`Cards since last special: ${cardsSinceLastSpecial}`)
 
-    if (cardsSinceLastSpecial >= 5 && Math.random() < 0.3) {
+    if (cardsSinceLastSpecial >= 7 && Math.random() < 0.3) {
+      isSpecialCard = true
       showSpecialCard()
     } else {
+      isSpecialCard = false
       showRegularCard()
-      // Re-enable dragging for regular cards
-      card.onmousedown = handleMouseDown
-      document.onmousemove = handleMouseMove
-      document.onmouseup = handleMouseUp
     }
   }
 
@@ -138,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     card.style.transform = `translateX(0px) rotate(0deg)`
     card.style.opacity = 1
+    card.style.cursor = "grab"
 
     document.getElementById("accept-indicator").style.opacity = 0
     document.getElementById("reject-indicator").style.opacity = 0
@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showSpecialCard() {
-    console.log("Showing special card")
+    //console.log("Showing special card")
     const specialCard =
       specialCards[Math.floor(Math.random() * specialCards.length)]
 
@@ -162,6 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
     card.style.fontSize = "1em"
     card.style.fontWeight = "bold"
     card.style.color = "#25221f"
+    card.style.cursor = "default" // Change cursor to default for special cards
 
     const imgElement = document.createElement("img")
     imgElement.src = specialCard.image
@@ -193,20 +194,14 @@ document.addEventListener("DOMContentLoaded", () => {
     card.style.transform = `translateX(0px) rotate(0deg)`
     card.style.opacity = 1
 
-    // Remove faction impact displays for special cards
     document.getElementById("accept-indicator").style.opacity = 0
     document.getElementById("reject-indicator").style.opacity = 0
     document.getElementById("accept-effects").innerHTML = ""
     document.getElementById("reject-effects").innerHTML = ""
-
-    // Disable dragging for special cards
-    card.onmousedown = null
-    document.onmousemove = null
-    document.onmouseup = null
   }
 
   function acquireItem(itemName) {
-    console.log(`Acquiring item: ${itemName}`)
+    //console.log(`Acquiring item: ${itemName}`)
     REWARDS[itemName].count++
     updateItemDisplay(itemName)
   }
@@ -251,15 +246,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function handleMouseDown(event) {
-    if (event.target.classList.contains("special-card-button")) {
-      // If the clicked element is the special card button, don't initiate dragging
-      return
-    }
+    if (isSpecialCard) return // Prevent dragging for special cards
+    if (event.target.classList.contains("special-card-button")) return
     startX = event.clientX
     card.style.transition = "none"
   }
 
   function handleMouseMove(event) {
+    if (isSpecialCard) return // Prevent dragging for special cards
     if (startX === 0) return
     currentX = event.clientX - startX
     const rotation = currentX / 20
@@ -298,6 +292,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function handleMouseUp() {
+    if (isSpecialCard) return
     card.style.transition = "transform 0.3s ease, opacity 0.3s ease"
 
     if (currentX > 100) {
@@ -550,7 +545,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function restartGame() {
-    // Reset all game variables
     currentCardIndex = 0
     yearCount = 0
     cardsSinceLastSpecial = 0
@@ -562,9 +556,8 @@ document.addEventListener("DOMContentLoaded", () => {
     armyMaxScoreYears = 0
     treasuryBalanceYears = 0
 
-    // Reset factions
     for (let faction in factions) {
-      factions[faction] = 50 // Or whatever the starting value should be
+      factions[faction] = 75
     }
 
     // Remove game over screen
@@ -573,7 +566,6 @@ document.addEventListener("DOMContentLoaded", () => {
       gameOverScreen.remove()
     }
 
-    // Restart the game
     startGame()
   }
 })
