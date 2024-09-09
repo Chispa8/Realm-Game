@@ -396,10 +396,10 @@ body {
 }
 
 #play-button {
-  width: 150px;
+  width: 200px;
   height: 60px;
   margin: 30px;
-  font-size: x-large;
+  font-size: large;
   padding: 0.6em 2em;
   border: none;
   outline: none;
@@ -599,4 +599,46 @@ body {
   font-size: 20px;
   font-weight: bold;
   color: #333;
+}
+
+.high-scores-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.high-scores-content {
+  background-color: #fff;
+  padding: 2em;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.high-scores-content h1 {
+  font-size: 2em;
+  margin-bottom: 0.5em;
+}
+
+.high-scores-content ol {
+  list-style-position: inside;
+  padding: 0;
+}
+
+.high-scores-content li {
+  font-size: 1.2em;
+  margin-bottom: 0.5em;
+}
+
+#close-high-scores {
+  margin-top: 1em;
+  padding: 0.5em 1em;
+  font-size: 1em;
+  cursor: pointer;
 }

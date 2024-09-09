@@ -7,9 +7,7 @@ let currentCardIndex = 0
 let startX = 0
 let currentX = 0
 let yearCount = 0
-let score = 0
 let cardsSinceLastSpecial = 0
-let isSpecialCard = false
 let currentGoals = []
 let achievedGoals = new Set()
 let churchMaxScoreYears = 0
@@ -19,15 +17,21 @@ let treasuryBalanceYears = 0
 const numberOfGoals = 3
 let isGameOver = false
 let gameOverReason = ""
+let score = 0
+let isSpecialCard = false
+let highScores = []
 
 document.addEventListener("DOMContentLoaded", () => {
   const startScreen = document.getElementById("start-screen")
   const gameScreen = document.getElementById("game-screen")
   const playButton = document.getElementById("play-button")
+  const continueButton = document.getElementById("continue-button")
+  const highScoresButton = document.getElementById("high-scores-button")
   const musicButton = document.getElementById("music-button")
   const backgroundMusic = document.getElementById("background-music")
   const volumeSlider = document.getElementById("volume-slider")
   const volumeIcon = document.getElementById("volume-icon")
+  const mainMenuButton = document.getElementById("main-menu-button")
 
   const randomRulerIndex = Math.floor(Math.random() * ruler.length)
 
@@ -63,6 +67,20 @@ document.addEventListener("DOMContentLoaded", () => {
     startScreen.style.display = "none"
     gameScreen.style.display = "block"
     startGame()
+  })
+
+  continueButton.addEventListener("click", () => {
+    loadGame()
+    startScreen.style.display = "none"
+    gameScreen.style.display = "block"
+  })
+
+  highScoresButton.addEventListener("click", showHighScores)
+
+  mainMenuButton.addEventListener("click", () => {
+    saveGame()
+    gameScreen.style.display = "none"
+    startScreen.style.display = "block"
   })
 
   volumeSlider.addEventListener("input", (e) => {
@@ -103,20 +121,15 @@ document.addEventListener("DOMContentLoaded", () => {
     updateFactionDisplay()
   }
 
-  function updateScore(points) {
-    score += points
-    document.getElementById("score-display").textContent = `Score ${score}`
-  }
-
   function showCard() {
     if (isGameOver) {
       return
     }
 
     cardsSinceLastSpecial++
-    //console.log(`Cards since last special: ${cardsSinceLastSpecial}`)
+    console.log(`Cards since last special: ${cardsSinceLastSpecial}`)
 
-    if (cardsSinceLastSpecial >= 7 && Math.random() < 0.3) {
+    if (cardsSinceLastSpecial >= 5 && Math.random() < 0.3) {
       isSpecialCard = true
       showSpecialCard()
     } else {
@@ -154,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showSpecialCard() {
-    //console.log("Showing special card")
+    console.log("Showing special card")
     const specialCard =
       specialCards[Math.floor(Math.random() * specialCards.length)]
 
@@ -209,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function acquireItem(itemName) {
-    //console.log(`Acquiring item: ${itemName}`)
+    console.log(`Acquiring item: ${itemName}`)
     REWARDS[itemName].count++
     updateItemDisplay(itemName)
   }
@@ -254,14 +267,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function handleMouseDown(event) {
-    if (isSpecialCard) return // Prevent dragging for special cards
+    if (isSpecialCard) return
     if (event.target.classList.contains("special-card-button")) return
     startX = event.clientX
     card.style.transition = "none"
   }
 
   function handleMouseMove(event) {
-    if (isSpecialCard) return // Prevent dragging for special cards
+    if (isSpecialCard) return
     if (startX === 0) return
     currentX = event.clientX - startX
     const rotation = currentX / 20
@@ -269,7 +282,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const cardData = cards[currentCardIndex]
     if (cardData) {
-      // Check if cardData exists (it won't for special cards)
       const impactsYes = cardData.impact.yes
       const impactsNo = cardData.impact.no
 
@@ -300,7 +312,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function handleMouseUp() {
-    if (isSpecialCard) return // Prevent dragging for special cards
+    if (isSpecialCard) return
 
     card.style.transition = "transform 0.3s ease, opacity 0.3s ease"
 
@@ -546,6 +558,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <p>You ruled for ${yearCount} years.</p>
         <p>Final Score: ${score}</p>
         <button id="restart-button">Play Again</button>
+        <button id="main-menu-button-gameover">Main Menu</button>
       </div>
     `
     document.body.appendChild(gameOverScreen)
@@ -553,7 +566,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const restartButton = document.getElementById("restart-button")
     restartButton.addEventListener("click", restartGame)
 
+    const mainMenuButtonGameOver = document.getElementById(
+      "main-menu-button-gameover"
+    )
+    mainMenuButtonGameOver.addEventListener("click", () => {
+      gameOverScreen.remove()
+      gameScreen.style.display = "none"
+      startScreen.style.display = "block"
+    })
+
     gameOverSound.play()
+    updateHighScores(score)
   }
 
   function restartGame() {
@@ -580,44 +603,129 @@ document.addEventListener("DOMContentLoaded", () => {
 
     startGame()
   }
+
+  function updateScore(points) {
+    score += points
+    document.getElementById("score-display").textContent = `Score: ${score}`
+  }
+
+  function updateFactions(decision) {
+    const impacts = cards[currentCardIndex].impact[decision]
+    if (!impacts) return
+
+    for (const faction in impacts) {
+      factions[faction] += impacts[faction]
+      if (factions[faction] > 100) factions[faction] = 100
+      if (factions[faction] < 0) factions[faction] = 0
+    }
+  }
+
+  function updateFactionDisplay() {
+    updateFactionIcon("army-fill", factions.army)
+    updateFactionIcon("people-fill", factions.people)
+    updateFactionIcon("church-fill", factions.church)
+    updateFactionIcon("money-fill", factions.money)
+
+    if (factions.love > 0) {
+      updateFactionIcon("love-fill", factions.love)
+      document.getElementById("love-score").style.display = "block"
+    } else {
+      document.getElementById("love-score").style.display = "none"
+    }
+  }
+
+  function updateFactionIcon(fillId, value) {
+    const fillElement = document.getElementById(fillId)
+    fillElement.style.height = `${value}%`
+
+    if (value < 25) {
+      fillElement.style.backgroundColor = "rgba(255, 0, 0, 0.5)"
+    } else if (value < 50) {
+      fillElement.style.backgroundColor = "rgba(255, 165, 0, 0.5)"
+    } else if (value < 75) {
+      fillElement.style.backgroundColor = "rgba(255, 255, 0, 0.5)"
+    } else {
+      fillElement.style.backgroundColor = "rgba(0, 255, 0, 0.5)"
+    }
+  }
+
+  function saveGame() {
+    const gameState = {
+      currentCardIndex,
+      yearCount,
+      cardsSinceLastSpecial,
+      currentGoals,
+      achievedGoals: Array.from(achievedGoals),
+      churchMaxScoreYears,
+      peopleMaxScoreYears,
+      armyMaxScoreYears,
+      treasuryBalanceYears,
+      score,
+      factions,
+      REWARDS,
+    }
+    localStorage.setItem("gameState", JSON.stringify(gameState))
+  }
+
+  function loadGame() {
+    const savedState = JSON.parse(localStorage.getItem("gameState"))
+    if (savedState) {
+      currentCardIndex = savedState.currentCardIndex
+      yearCount = savedState.yearCount
+      cardsSinceLastSpecial = savedState.cardsSinceLastSpecial
+      currentGoals = savedState.currentGoals
+      achievedGoals = new Set(savedState.achievedGoals)
+      churchMaxScoreYears = savedState.churchMaxScoreYears
+      peopleMaxScoreYears = savedState.peopleMaxScoreYears
+      armyMaxScoreYears = savedState.armyMaxScoreYears
+      treasuryBalanceYears = savedState.treasuryBalanceYears
+      score = savedState.score
+      Object.assign(factions, savedState.factions)
+      Object.assign(REWARDS, savedState.REWARDS)
+
+      updateScore(0)
+      displayGoals()
+      updateFactionDisplay()
+      showCard()
+      yearCountElement.textContent = yearCount
+
+      for (const itemName in REWARDS) {
+        updateItemDisplay(itemName)
+      }
+    } else {
+      alert("No saved game found. Starting a new game.")
+      startGame()
+    }
+  }
+
+  function updateHighScores(newScore) {
+    highScores = JSON.parse(localStorage.getItem("highScores")) || []
+    highScores.push(newScore)
+    highScores.sort((a, b) => b - a)
+    highScores = highScores.slice(0, 5)
+    localStorage.setItem("highScores", JSON.stringify(highScores))
+  }
+
+  function showHighScores() {
+    const highScoresScreen = document.createElement("div")
+    highScoresScreen.className = "high-scores-screen"
+    highScoresScreen.innerHTML = `
+      <div class="high-scores-content">
+        <h1>High Scores</h1>
+        <ol>
+          ${highScores.map((score) => `<li>${score}</li>`).join("")}
+        </ol>
+        <button id="close-high-scores">Close</button>
+      </div>
+    `
+    document.body.appendChild(highScoresScreen)
+
+    const closeButton = document.getElementById("close-high-scores")
+    closeButton.addEventListener("click", () => {
+      highScoresScreen.remove()
+    })
+  }
+
+  // Load high scores on startup
+  highScores = JSON.parse(localStorage.getItem("highScores")) || []
 })
-
-function updateFactions(decision) {
-  const impacts = cards[currentCardIndex].impact[decision]
-  if (!impacts) return
-
-  for (const faction in impacts) {
-    factions[faction] += impacts[faction]
-    if (factions[faction] > 100) factions[faction] = 100
-    if (factions[faction] < 0) factions[faction] = 0
-  }
-}
-
-function updateFactionDisplay() {
-  updateFactionIcon("army-fill", factions.army)
-  updateFactionIcon("people-fill", factions.people)
-  updateFactionIcon("church-fill", factions.church)
-  updateFactionIcon("money-fill", factions.money)
-
-  if (factions.love > 0) {
-    updateFactionIcon("love-fill", factions.love)
-    document.getElementById("love-score").style.display = "block"
-  } else {
-    document.getElementById("love-score").style.display = "none"
-  }
-}
-
-function updateFactionIcon(fillId, value) {
-  const fillElement = document.getElementById(fillId)
-  fillElement.style.height = `${value}%`
-
-  if (value < 25) {
-    fillElement.style.backgroundColor = "rgba(255, 0, 0, 0.5)"
-  } else if (value < 50) {
-    fillElement.style.backgroundColor = "rgba(255, 165, 0, 0.5)"
-  } else if (value < 75) {
-    fillElement.style.backgroundColor = "rgba(255, 255, 0, 0.5)"
-  } else {
-    fillElement.style.backgroundColor = "rgba(0, 255, 0, 0.5)"
-  }
-}
