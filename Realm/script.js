@@ -7,6 +7,7 @@ let currentCardIndex = 0
 let startX = 0
 let currentX = 0
 let yearCount = 0
+let score = 0
 let cardsSinceLastSpecial = 0
 let isSpecialCard = false
 let currentGoals = []
@@ -95,9 +96,16 @@ document.addEventListener("DOMContentLoaded", () => {
   updateRulerDisplay(randomRulerIndex)
 
   function startGame() {
+    score = 0
+    updateScore(0)
     initializeGoals()
     showCard()
     updateFactionDisplay()
+  }
+
+  function updateScore(points) {
+    score += points
+    document.getElementById("score-display").textContent = `Score ${score}`
   }
 
   function showCard() {
@@ -162,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
     card.style.fontSize = "1em"
     card.style.fontWeight = "bold"
     card.style.color = "#25221f"
-    card.style.cursor = "default" // Change cursor to default for special cards
+    card.style.cursor = "default"
 
     const imgElement = document.createElement("img")
     imgElement.src = specialCard.image
@@ -292,7 +300,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function handleMouseUp() {
-    if (isSpecialCard) return
+    if (isSpecialCard) return // Prevent dragging for special cards
+
     card.style.transition = "transform 0.3s ease, opacity 0.3s ease"
 
     if (currentX > 100) {
@@ -304,6 +313,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateFactionDisplay()
         incrementYear()
         checkGoals()
+        updateScore(100)
         isGameOver = checkGameOver()
         if (isGameOver) {
           showGameOverScreen()
@@ -321,6 +331,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateFactionDisplay()
         incrementYear()
         checkGoals()
+        updateScore(100)
         isGameOver = checkGameOver()
         if (isGameOver) {
           showGameOverScreen()
@@ -468,6 +479,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function achieveGoal(goal) {
     achievedGoals.add(goal.id)
     displayGoals()
+    updateScore(200)
     showAlert(`Goal Achieved: ${goal.title}`)
   }
 
@@ -488,7 +500,6 @@ document.addEventListener("DOMContentLoaded", () => {
       alertElement.remove()
     })
 
-    // Optional: Automatically close the alert after 5 seconds
     setTimeout(() => {
       if (document.body.contains(alertElement)) {
         alertElement.remove()
@@ -533,6 +544,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <h1>Game Over</h1>
         <p>${gameOverReason}</p>
         <p>You ruled for ${yearCount} years.</p>
+        <p>Final Score: ${score}</p>
         <button id="restart-button">Play Again</button>
       </div>
     `
@@ -555,12 +567,12 @@ document.addEventListener("DOMContentLoaded", () => {
     peopleMaxScoreYears = 0
     armyMaxScoreYears = 0
     treasuryBalanceYears = 0
+    score = 0
 
     for (let faction in factions) {
       factions[faction] = 75
     }
 
-    // Remove game over screen
     const gameOverScreen = document.querySelector(".game-over-screen")
     if (gameOverScreen) {
       gameOverScreen.remove()
