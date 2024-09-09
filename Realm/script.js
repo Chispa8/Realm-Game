@@ -8,15 +8,15 @@ let startX = 0
 let currentX = 0
 let yearCount = 0
 let cardsSinceLastSpecial = 0
-const numberOfGoals = 3 // Number of goals to display per round
 let currentGoals = []
 let achievedGoals = new Set()
-
-// New variables for tracking goal progress
 let churchMaxScoreYears = 0
 let peopleMaxScoreYears = 0
 let armyMaxScoreYears = 0
 let treasuryBalanceYears = 0
+const numberOfGoals = 3
+let isGameOver = false
+let gameOverReason = ""
 
 document.addEventListener("DOMContentLoaded", () => {
   const startScreen = document.getElementById("start-screen")
@@ -100,6 +100,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showCard() {
+    if (isGameOver) {
+      return
+    }
+
     cardsSinceLastSpecial++
     console.log(`Cards since last special: ${cardsSinceLastSpecial}`)
 
@@ -305,7 +309,10 @@ document.addEventListener("DOMContentLoaded", () => {
         updateFactionDisplay()
         incrementYear()
         checkGoals()
-        if (cards[currentCardIndex].next.yes !== undefined) {
+        isGameOver = checkGameOver()
+        if (isGameOver) {
+          showGameOverScreen()
+        } else if (cards[currentCardIndex].next.yes !== undefined) {
           currentCardIndex = cards[currentCardIndex].next.yes
           showCard()
         }
@@ -319,7 +326,10 @@ document.addEventListener("DOMContentLoaded", () => {
         updateFactionDisplay()
         incrementYear()
         checkGoals()
-        if (cards[currentCardIndex].next.no !== undefined) {
+        isGameOver = checkGameOver()
+        if (isGameOver) {
+          showGameOverScreen()
+        } else if (cards[currentCardIndex].next.no !== undefined) {
           currentCardIndex = cards[currentCardIndex].next.no
           showCard()
         }
@@ -452,8 +462,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 achieveGoal(goal)
               }
             } else {
-              peopleMaxSc
-              oreYears = 0
+              peopleMaxScoreYears = 0
             }
             break
         }
@@ -490,6 +499,82 @@ document.addEventListener("DOMContentLoaded", () => {
         alertElement.remove()
       }
     }, 5000)
+  }
+
+  function checkGameOver() {
+    if (factions.army <= 0) {
+      gameOverReason =
+        "Your army has deserted you. Your reign has come to an end."
+      return true
+    }
+    if (factions.people <= 0) {
+      gameOverReason =
+        "The people have overthrown you. Your reign has come to an end."
+      return true
+    }
+    if (factions.church <= 0) {
+      gameOverReason =
+        "The church has excommunicated you. Your reign has come to an end."
+      return true
+    }
+    if (factions.money <= 0) {
+      gameOverReason =
+        "Your kingdom is bankrupt. Your reign has come to an end."
+      return true
+    }
+    if (yearCount >= 100) {
+      gameOverReason =
+        "You have ruled for a century. Your reign has come to a natural end."
+      return true
+    }
+    return false
+  }
+
+  function showGameOverScreen() {
+    const gameOverScreen = document.createElement("div")
+    gameOverScreen.className = "game-over-screen"
+    gameOverScreen.innerHTML = `
+      <div class="game-over-content">
+        <h1>Game Over</h1>
+        <p>${gameOverReason}</p>
+        <p>You ruled for ${yearCount} years.</p>
+        <button id="restart-button">Play Again</button>
+      </div>
+    `
+    document.body.appendChild(gameOverScreen)
+
+    const restartButton = document.getElementById("restart-button")
+    restartButton.addEventListener("click", restartGame)
+
+    gameOverSound.play()
+  }
+
+  function restartGame() {
+    // Reset all game variables
+    currentCardIndex = 0
+    yearCount = 0
+    cardsSinceLastSpecial = 0
+    isGameOver = false
+    gameOverReason = ""
+    achievedGoals = new Set()
+    churchMaxScoreYears = 0
+    peopleMaxScoreYears = 0
+    armyMaxScoreYears = 0
+    treasuryBalanceYears = 0
+
+    // Reset factions
+    for (let faction in factions) {
+      factions[faction] = 50 // Or whatever the starting value should be
+    }
+
+    // Remove game over screen
+    const gameOverScreen = document.querySelector(".game-over-screen")
+    if (gameOverScreen) {
+      gameOverScreen.remove()
+    }
+
+    // Restart the game
+    startGame()
   }
 })
 
