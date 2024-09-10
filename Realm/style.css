@@ -355,11 +355,26 @@ body {
 #year-count {
   font-size: 50px;
 }
+.help-button {
+  position: absolute;
+  bottom: 100px;
+  right: 160px;
+  width: 40px;
+  height: 40px;
+  background-image: url("./icons/information.png"); /* Cambia la ruta por la de tu PNG */
+  background-size: cover; /* Ajusta el tamaño de la imagen al tamaño del botón */
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
+  background-position: center; /* Centra la imagen dentro del botón */
+  border: none; /* Elimina el borde del botón */
+  background-color: transparent; /* Asegúrate de que el fondo sea transparente */
+  cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+}
 
 #main-menu-button {
   position: absolute;
   bottom: 30px;
   right: 10%;
+  cursor: pointer;
   --b: 3px; /* border thickness */
   --s: 0.45em; /* size of the corner */
   --color: #373b44;
