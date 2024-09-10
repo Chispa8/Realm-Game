@@ -80,7 +80,11 @@ document.addEventListener("DOMContentLoaded", () => {
   mainMenuButton.addEventListener("click", () => {
     saveGame()
     gameScreen.style.display = "none"
-    startScreen.style.display = "block"
+    startScreen.style.display = "flex"
+    startScreen.style.flexDirection = "column"
+    startScreen.style.justifyContent = "center"
+    startScreen.style.alignItems = "center"
+    updateContinueButtonState()
   })
 
   volumeSlider.addEventListener("input", (e) => {
@@ -114,11 +118,40 @@ document.addEventListener("DOMContentLoaded", () => {
   updateRulerDisplay(randomRulerIndex)
 
   function startGame() {
+    currentCardIndex = 0
     score = 0
     updateScore(0)
+    yearCount = 0
+    cardsSinceLastSpecial = 0
+    yearCountElement.textContent = yearCount
     initializeGoals()
+    resetFactions()
+    resetItems()
+    isGameOver = false
+    churchMaxScoreYears = 0
+    peopleMaxScoreYears = 0
+    armyMaxScoreYears = 0
+    treasuryBalanceYears = 0
+    achievedGoals = new Set()
+
+    // Asegurarse de que la carta se muestre correctamente
     showCard()
     updateFactionDisplay()
+  }
+
+  function resetFactions() {
+    for (let faction in factions) {
+      factions[faction] = 75
+    }
+    // Ensure 'love' faction is set to 0
+    factions.love = 0
+  }
+
+  function resetItems() {
+    for (let item in REWARDS) {
+      REWARDS[item].count = 0
+      updateItemDisplay(item)
+    }
   }
 
   function showCard() {
@@ -136,6 +169,9 @@ document.addEventListener("DOMContentLoaded", () => {
       isSpecialCard = false
       showRegularCard()
     }
+
+    // Asegurarse de que la carta sea visible
+    card.style.opacity = 1
   }
 
   function showRegularCard() {
@@ -160,10 +196,21 @@ document.addEventListener("DOMContentLoaded", () => {
     card.style.opacity = 1
     card.style.cursor = "grab"
 
+    // Add 3D, shine, and glow effect
+    card.style.transition = "all 0.3s ease"
+    card.style.boxShadow =
+      "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23), 0 0 15px gold"
+    card.style.transform = "perspective(1000px) rotateX(0) rotateY(0)"
+    card.style.background = "linear-gradient(45deg, #d09035, #ffd700)"
+    card.style.border = "2px solid gold"
+
     document.getElementById("accept-indicator").style.opacity = 0
     document.getElementById("reject-indicator").style.opacity = 0
     document.getElementById("accept-effects").innerHTML = ""
     document.getElementById("reject-effects").innerHTML = ""
+
+    // Asegurarse de que la carta sea visible
+    card.style.opacity = 1
   }
 
   function showSpecialCard() {
@@ -175,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     card.style.backgroundColor = "#d09035"
     card.style.borderRadius = "10px"
-    card.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.2)"
+    card.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.2), 0 0 15px gold"
     card.style.display = "flex"
     card.style.flexDirection = "column"
     card.style.justifyContent = "center"
@@ -184,6 +231,14 @@ document.addEventListener("DOMContentLoaded", () => {
     card.style.fontWeight = "bold"
     card.style.color = "#25221f"
     card.style.cursor = "default"
+
+    // Add 3D, shine, and glow effect
+    card.style.transition = "all 0.3s ease"
+    card.style.boxShadow =
+      "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23), 0 0 15px gold"
+    card.style.transform = "perspective(1000px) rotateX(0) rotateY(0)"
+    card.style.background = "linear-gradient(45deg, #d09035, #ffd700)"
+    card.style.border = "2px solid gold"
 
     const imgElement = document.createElement("img")
     imgElement.src = specialCard.image
@@ -278,7 +333,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (startX === 0) return
     currentX = event.clientX - startX
     const rotation = currentX / 20
-    card.style.transform = `translateX(${currentX}px) rotate(${rotation}deg)`
+    card.style.transform = `perspective(1000px) translateX(${currentX}px) rotateY(${rotation}deg)`
 
     const cardData = cards[currentCardIndex]
     if (cardData) {
@@ -318,7 +373,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (currentX > 100) {
       acceptSound.play()
-      card.style.transform = `translateX(1000px) rotate(30deg)`
+      card.style.transform = `perspective(1000px) translateX(1000px) rotateY(30deg)`
       card.style.opacity = 0
       setTimeout(() => {
         updateFactions("yes")
@@ -336,7 +391,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 300)
     } else if (currentX < -100) {
       rejectSound.play()
-      card.style.transform = `translateX(-1000px) rotate(-30deg)`
+      card.style.transform = `perspective(1000px) translateX(-1000px) rotateY(-30deg)`
       card.style.opacity = 0
       setTimeout(() => {
         updateFactions("no")
@@ -353,7 +408,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }, 300)
     } else {
-      card.style.transform = `translateX(0px) rotate(0deg)`
+      card.style.transform = `perspective(1000px) translateX(0px) rotateY(0deg)`
       acceptIndicator.style.opacity = 0
       rejectIndicator.style.opacity = 0
     }
@@ -364,6 +419,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function incrementYear() {
     yearCount += 1
+    yearCount = Math.min(yearCount, 100)
     yearCountElement.textContent = yearCount
   }
 
@@ -430,16 +486,8 @@ document.addEventListener("DOMContentLoaded", () => {
           case 3:
           case 7:
           case 10:
-            if (factions.money >= 100) {
-              treasuryBalanceYears++
-              if (
-                treasuryBalanceYears >=
-                parseInt(goal.description.match(/\d+/)[0])
-              ) {
-                achieveGoal(goal)
-              }
-            } else {
-              treasuryBalanceYears = 0
+            if (factions.money >= parseInt(goal.description.match(/\d+/)[0])) {
+              achieveGoal(goal)
             }
             break
           case 4:
@@ -572,36 +620,30 @@ document.addEventListener("DOMContentLoaded", () => {
     mainMenuButtonGameOver.addEventListener("click", () => {
       gameOverScreen.remove()
       gameScreen.style.display = "none"
-      startScreen.style.display = "block"
+      startScreen.style.display = "flex"
+      startScreen.style.flexDirection = "column"
+      startScreen.style.justifyContent = "center"
+      startScreen.style.alignItems = "center"
+      updateContinueButtonState()
     })
 
     gameOverSound.play()
     updateHighScores(score)
+    isGameOver = true
+    saveGame()
   }
 
   function restartGame() {
-    currentCardIndex = 0
-    yearCount = 0
-    cardsSinceLastSpecial = 0
-    isGameOver = false
-    gameOverReason = ""
-    achievedGoals = new Set()
-    churchMaxScoreYears = 0
-    peopleMaxScoreYears = 0
-    armyMaxScoreYears = 0
-    treasuryBalanceYears = 0
-    score = 0
-
-    for (let faction in factions) {
-      factions[faction] = 75
-    }
-
     const gameOverScreen = document.querySelector(".game-over-screen")
     if (gameOverScreen) {
       gameOverScreen.remove()
     }
-
     startGame()
+
+    // Asegurarse de que la carta sea visible después de reiniciar
+    setTimeout(() => {
+      card.style.opacity = 1
+    }, 0)
   }
 
   function updateScore(points) {
@@ -663,6 +705,7 @@ document.addEventListener("DOMContentLoaded", () => {
       score,
       factions,
       REWARDS,
+      isGameOver,
     }
     localStorage.setItem("gameState", JSON.stringify(gameState))
   }
@@ -682,6 +725,7 @@ document.addEventListener("DOMContentLoaded", () => {
       score = savedState.score
       Object.assign(factions, savedState.factions)
       Object.assign(REWARDS, savedState.REWARDS)
+      isGameOver = savedState.isGameOver
 
       updateScore(0)
       displayGoals()
@@ -726,6 +770,20 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   }
 
+  function updateContinueButtonState() {
+    const savedState = JSON.parse(localStorage.getItem("gameState"))
+    if (savedState && !savedState.isGameOver) {
+      continueButton.disabled = false
+      continueButton.style.opacity = 1
+    } else {
+      continueButton.disabled = true
+      continueButton.style.opacity = 0.5
+    }
+  }
+
   // Load high scores on startup
   highScores = JSON.parse(localStorage.getItem("highScores")) || []
+
+  // Update continue button state on startup
+  updateContinueButtonState()
 })
