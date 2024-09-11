@@ -389,58 +389,6 @@ body {
 #year-count {
   font-size: 50px;
 }
-.help-button {
-  position: absolute;
-  bottom: 130px;
-  right: 160px;
-  width: 40px;
-  height: 40px;
-  background-image: url("./icons/information.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
-}
-
-#main-menu-button {
-  position: absolute;
-  bottom: 30px;
-  right: 10%;
-  cursor: pointer;
-  --b: 3px; /* border thickness */
-  --s: 0.45em; /* size of the corner */
-  --color: #373b44;
-
-  padding: calc(0.5em + var(--s)) calc(0.9em + var(--s));
-  color: var(--color);
-  --_p: var(--s);
-  background: conic-gradient(
-      from 90deg at var(--b) var(--b),
-      #0000 90deg,
-      var(--color) 0
-    )
-    var(--_p) var(--_p) / calc(100% - var(--b) - 2 * var(--_p))
-    calc(100% - var(--b) - 2 * var(--_p));
-  transition: 0.3s linear, color 0s, background-color 0s;
-  outline: var(--b) solid #0000;
-  outline-offset: 0.6em;
-  font-size: 16px;
-
-  border: 0;
-
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-}
-
-#main-menu-button:hover,
-#main-menu-button:focus-visible {
-  --_p: 0px;
-  outline-color: var(--color);
-  outline-offset: 0.05em;
-}
 
 #card-container {
   flex-grow: 1;
@@ -658,13 +606,67 @@ body {
   background-color: #45a049;
 }
 
-#game-volume-control {
+#game-controls {
   position: absolute;
-  bottom: 88px;
-  right: 118px;
+  bottom: 4%;
+  right: 3%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  z-index: 1001;
+}
+
+.help-button {
+  width: 40px;
+  height: 40px;
+  background-image: url("./icons/information.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+#main-menu-button {
+  cursor: pointer;
+  --b: 3px; /* border thickness */
+  --s: 0.45em; /* size of the corner */
+  --color: #373b44;
+
+  padding: calc(0.5em + var(--s)) calc(0.9em + var(--s));
+  color: var(--color);
+  --_p: var(--s);
+  background: conic-gradient(
+      from 90deg at var(--b) var(--b),
+      #0000 90deg,
+      var(--color) 0
+    )
+    var(--_p) var(--_p) / calc(100% - var(--b) - 2 * var(--_p))
+    calc(100% - var(--b) - 2 * var(--_p));
+  transition: 0.3s linear, color 0s, background-color 0s;
+  outline: var(--b) solid #0000;
+  outline-offset: 0.6em;
+  font-size: 16px;
+  border: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+#main-menu-button:hover,
+#main-menu-button:focus-visible {
+  --_p: 0px;
+  outline-color: var(--color);
+  outline-offset: 0.05em;
+}
+
+#game-volume-control {
   display: flex;
   align-items: center;
-  z-index: 1001;
 }
 
 #game-volume-slider {
