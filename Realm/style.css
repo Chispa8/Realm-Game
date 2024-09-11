@@ -29,21 +29,25 @@ body {
   overflow: hidden;
 }
 
-.background-animation {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
+.shiny-title {
+  font-size: 5rem;
+  color: #ffd700;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(to right, #ffd700 0%, #f8f8ff 10%, #ffd700 20%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 3s infinite linear;
+  background-size: 200% 100%;
 }
 
-@keyframes float {
-  from {
-    transform: translateY(100vh) rotate(0deg);
+@keyframes shine {
+  0% {
+    background-position: 0% 50%;
   }
-  to {
-    transform: translateY(-100px) rotate(360deg);
+  100% {
+    background-position: 200% 50%;
   }
 }
 
@@ -53,6 +57,30 @@ body {
   position: absolute;
   opacity: 0.2;
   animation: float 15s linear infinite;
+}
+
+.background-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate(var(--moveX), var(--moveY)) rotate(var(--rotate));
+  }
+}
+
+.floating-icon {
+  position: absolute;
+  opacity: 0.2;
+  animation: float 15s infinite alternate ease-in-out;
 }
 
 .sword {
@@ -73,53 +101,59 @@ body {
   background: url("./icons/start-castle.png") no-repeat center center / contain;
 }
 
-/* Posiciona los elementos en diferentes lugares */
-.background-animation > div:nth-child(1) {
-  left: 10%;
-  animation-delay: -2s;
-}
-.background-animation > div:nth-child(2) {
-  left: 30%;
-  animation-delay: -4s;
-}
-.background-animation > div:nth-child(3) {
-  left: 50%;
-  animation-delay: -6s;
-}
-.background-animation > div:nth-child(4) {
-  left: 70%;
-  animation-delay: -8s;
-}
-.background-animation > div:nth-child(5) {
-  left: 90%;
-  animation-delay: -10s;
-}
-
-#game-title {
-  font-size: 5rem;
-  color: transparent;
-  -webkit-text-stroke: 2px #ffd700;
-  margin-bottom: 2rem;
-  z-index: 2;
-}
-
-#start-screen button {
+.start-button {
+  width: 200px;
   font-size: 1.5rem;
-  padding: 10px 20px;
+  padding: 10px 30px;
   margin: 10px;
-  background-color: #e74c3c;
-  color: white;
+  color: rgb(68, 68, 68);
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
   z-index: 2;
-  width: 200px;
-  max-width: 90%;
+  background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+  background-size: 300% 300%;
+  animation: gradientShift 5s ease infinite;
 }
 
-#start-screen button:hover {
-  background-color: #c0392b;
+.start-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: all 0.5s;
+}
+
+.start-button:hover::before {
+  left: 100%;
+}
+
+.start-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 #start-screen button:disabled {

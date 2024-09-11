@@ -48,6 +48,59 @@ document.addEventListener("DOMContentLoaded", () => {
   let isMuted = false
   let isPlaying = false
 
+  function generateFloatingIcons() {
+    const backgroundAnimation = document.getElementById("background-animation")
+    if (!backgroundAnimation) {
+      console.error("Element with id 'background-animation' not found")
+      return
+    }
+
+    const iconTypes = ["sword", "shield", "castle"]
+    const numIcons = 30
+
+    backgroundAnimation.innerHTML = ""
+
+    for (let i = 0; i < numIcons; i++) {
+      const icon = document.createElement("div")
+      icon.className = `floating-icon ${iconTypes[i % iconTypes.length]}`
+
+      icon.style.left = `${Math.random() * 100}%`
+      icon.style.top = `${Math.random() * 100}%`
+
+      const size = 30 + Math.random() * 30
+      icon.style.width = `${size}px`
+      icon.style.height = `${size}px`
+
+      const moveX = (Math.random() - 0.5) * 200
+      const moveY = (Math.random() - 0.5) * 200
+      const rotate = (Math.random() - 0.5) * 720
+
+      icon.style.setProperty("--moveX", `${moveX}px`)
+      icon.style.setProperty("--moveY", `${moveY}px`)
+      icon.style.setProperty("--rotate", `${rotate}deg`)
+
+      // Retraso y duración de animación aleatoria
+      icon.style.animationDelay = `${Math.random()}s`
+      icon.style.animationDuration = `${10 + Math.random() * 10}s`
+
+      backgroundAnimation.appendChild(icon)
+    }
+  }
+
+  generateFloatingIcons()
+
+  // Regenerar los iconos cuando se vuelve a la pantalla de inicio
+  mainMenuButton.addEventListener("click", () => {
+    saveGame()
+    gameScreen.style.display = "none"
+    startScreen.style.display = "flex"
+    startScreen.style.flexDirection = "column"
+    startScreen.style.justifyContent = "center"
+    startScreen.style.alignItems = "center"
+    updateContinueButtonState()
+    generateFloatingIcons()
+  })
+
   function toggleMusic() {
     if (!isPlaying) {
       backgroundMusic.volume = parseFloat(volumeSlider.value)
