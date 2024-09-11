@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const acceptSound = new Audio("sounds/accept.mp3")
   const rejectSound = new Audio("sounds/reject.mp3")
   const gameOverSound = new Audio("sounds/lose.mp3")
+  const goalAchievedSound = new Audio("sounds/achievement-win-drums.mp3")
 
   let isMuted = false
   let isPlaying = false
@@ -127,23 +128,20 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeGoals()
     resetFactions()
     resetItems()
+    showCard()
+    updateFactionDisplay()
     isGameOver = false
     churchMaxScoreYears = 0
     peopleMaxScoreYears = 0
     armyMaxScoreYears = 0
     treasuryBalanceYears = 0
     achievedGoals = new Set()
-
-    // Asegurarse de que la carta se muestre correctamente
-    showCard()
-    updateFactionDisplay()
   }
 
   function resetFactions() {
     for (let faction in factions) {
       factions[faction] = 75
     }
-    // Ensure 'love' faction is set to 0
     factions.love = 0
   }
 
@@ -170,7 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
       showRegularCard()
     }
 
-    // Asegurarse de que la carta sea visible
     card.style.opacity = 1
   }
 
@@ -196,7 +193,6 @@ document.addEventListener("DOMContentLoaded", () => {
     card.style.opacity = 1
     card.style.cursor = "grab"
 
-    // Add 3D, shine, and glow effect
     card.style.transition = "all 0.3s ease"
     card.style.boxShadow =
       "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23), 0 0 15px gold"
@@ -209,7 +205,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("accept-effects").innerHTML = ""
     document.getElementById("reject-effects").innerHTML = ""
 
-    // Asegurarse de que la carta sea visible
     card.style.opacity = 1
   }
 
@@ -232,7 +227,6 @@ document.addEventListener("DOMContentLoaded", () => {
     card.style.color = "#25221f"
     card.style.cursor = "default"
 
-    // Add 3D, shine, and glow effect
     card.style.transition = "all 0.3s ease"
     card.style.boxShadow =
       "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23), 0 0 15px gold"
@@ -308,6 +302,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
       updateFactionDisplay()
     }
+  }
+
+  const helpButton = document.querySelector(".help-button")
+  helpButton.addEventListener("click", showItemInfo)
+
+  function showItemInfo() {
+    const itemInfo = {
+      sword: { name: "Sword", effect: "Army +15" },
+      crystalBall: { name: "Crystal Ball", effect: "People +15" },
+      potion: { name: "Potion", effect: "Church +15" },
+      chest: { name: "Chest", effect: "Money +15" },
+    }
+
+    let infoContent = "<h2>Item Effects</h2>"
+    for (const [key, item] of Object.entries(itemInfo)) {
+      infoContent += `<p><strong>${item.name}:</strong> ${item.effect}</p>`
+    }
+
+    const alertElement = document.createElement("div")
+    alertElement.innerHTML = `
+      <div class="alert-content">
+        ${infoContent}
+        <button class="close-alert">Close</button>
+      </div>
+    `
+    alertElement.className = "custom-alert"
+    document.body.appendChild(alertElement)
+
+    const closeButton = alertElement.querySelector(".close-alert")
+    closeButton.addEventListener("click", () => {
+      alertElement.remove()
+    })
+
+    setTimeout(() => {
+      if (document.body.contains(alertElement)) {
+        alertElement.remove()
+      }
+    }, 10000)
   }
 
   function updateRulerDisplay(index) {
@@ -537,6 +569,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function achieveGoal(goal) {
+    goalAchievedSound.play()
     achievedGoals.add(goal.id)
     displayGoals()
     updateScore(200)
@@ -640,7 +673,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     startGame()
 
-    // Asegurarse de que la carta sea visible después de reiniciar
     setTimeout(() => {
       card.style.opacity = 1
     }, 0)
@@ -784,6 +816,5 @@ document.addEventListener("DOMContentLoaded", () => {
   // Load high scores on startup
   highScores = JSON.parse(localStorage.getItem("highScores")) || []
 
-  // Update continue button state on startup
   updateContinueButtonState()
 })
