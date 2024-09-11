@@ -34,7 +34,7 @@ body {
   color: #ffd700;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(to right, #c69b19 0%, #f8f8ff 10%, #ffd700 20%);
+  background: linear-gradient(to right, #c6ac19 0%, #f8f8ff 10%, #ffd700 20%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
