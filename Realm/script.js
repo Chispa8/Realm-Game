@@ -323,6 +323,37 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("reject-effects").innerHTML = ""
   }
 
+  const gameVolumeSlider = document.getElementById("game-volume-slider")
+  const gameVolumeIcon = document.getElementById("game-volume-icon")
+
+  gameVolumeSlider.addEventListener("input", (e) => {
+    const volume = parseFloat(e.target.value)
+    backgroundMusic.volume = volume
+    updateVolumeIcon(volume, gameVolumeIcon)
+  })
+
+  gameVolumeIcon.addEventListener("click", () => toggleMute(gameVolumeIcon))
+
+  function updateVolumeIcon(volume, iconElement) {
+    if (volume === 0) {
+      iconElement.textContent = "🔇"
+    } else if (volume < 0.5) {
+      iconElement.textContent = "🔉"
+    } else {
+      iconElement.textContent = "🔊"
+    }
+  }
+
+  function toggleMute(iconElement) {
+    isMuted = !isMuted
+    backgroundMusic.muted = isMuted
+    if (isMuted) {
+      iconElement.textContent = "🔇"
+    } else {
+      updateVolumeIcon(parseFloat(gameVolumeSlider.value), iconElement)
+    }
+  }
+
   function acquireItem(itemName) {
     console.log(`Acquiring item: ${itemName}`)
     REWARDS[itemName].count++
