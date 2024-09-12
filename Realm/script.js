@@ -901,4 +901,33 @@ document.addEventListener("DOMContentLoaded", () => {
   highScores = JSON.parse(localStorage.getItem("highScores")) || []
 
   updateContinueButtonState()
+
+  const instructionsButton = document.getElementById("instructions-button")
+  instructionsButton.addEventListener("click", showInstructions)
+
+  function showInstructions() {
+    const instructionsPopup = document.createElement("div")
+    instructionsPopup.className = "instructions-popup"
+    instructionsPopup.innerHTML = `
+      <div class="instructions-content">
+        <h2>How to Play Realm</h2>
+        <p>Welcome to Realm Game! As the ruler of your kingdom, your goal is to maintain balance and prosperity for 100 years. Here's how to play:</p>
+        <p>1. <strong>Make Decisions:</strong> Each turn, you'll be presented with a card showing a situation. Swipe right to accept or left to reject the proposal.</p>
+        <p>2. <strong>Balance Resources:</strong> Your decisions affect four main resources: Army, People, Church, and Money. Keep an eye on these indicators at the top of the screen.</p>
+        <p>3. <strong>Achieve Goals:</strong> Complete the goals listed on the left side of the screen to earn extra points.</p>
+        <p>4. <strong>Use Items:</strong> Special cards will give you items. Use these items strategically to boost your resources when needed.</p>
+        <p>5. <strong>Survive and Thrive:</strong> Try to keep all your resources above zero. If any resource hits zero, or you reach 100 years, the game ends.</p>
+        <p>Remember, every decision counts. Good luck, and may your reign be long and prosperous!</p>
+        <button class="close-instructions">Close</button>
+      </div>
+    `
+    document.body.appendChild(instructionsPopup)
+
+    const closeButton = instructionsPopup.querySelector(".close-instructions")
+    closeButton.addEventListener("click", () => {
+      instructionsPopup.remove()
+    })
+
+    instructionsPopup.style.display = "block"
+  }
 })

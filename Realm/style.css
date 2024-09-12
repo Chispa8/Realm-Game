@@ -31,8 +31,8 @@ body {
 
 .shiny-title {
   font-size: 5rem;
+  margin: 1% 0;
   color: #ffd700;
-  position: relative;
   overflow: hidden;
   background: linear-gradient(to right, #c6ac19 0%, #f8f8ff 10%, #ffd700 20%);
   background-clip: text;
@@ -102,7 +102,7 @@ body {
 }
 
 .start-button {
-  width: 150px;
+  width: 170px;
   font-size: 1rem;
   padding: 10px 30px;
   margin: 10px;
@@ -159,6 +159,52 @@ body {
 #start-screen button:disabled {
   background-color: #95a5a6;
   cursor: not-allowed;
+}
+
+.instructions-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 30px;
+  border-radius: 15px;
+  z-index: 1000;
+  max-width: 80%;
+  max-height: 80%;
+  overflow-y: auto;
+  display: none;
+}
+
+.instructions-content {
+  text-align: left;
+}
+
+.instructions-content h2 {
+  color: #ffd700;
+  margin-bottom: 20px;
+}
+
+.instructions-content p {
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.close-instructions {
+  background-color: #ffd700;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+.close-instructions:hover {
+  background-color: #ffec8b;
 }
 
 #game-container {
