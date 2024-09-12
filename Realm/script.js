@@ -722,8 +722,10 @@ document.addEventListener("DOMContentLoaded", () => {
         <p>${gameOverReason}</p>
         <p>You ruled for ${yearCount} years.</p>
         <p>Final Score: ${score}</p>
-        <button id="restart-button">Play Again</button>
-        <button id="main-menu-button-gameover">Main Menu</button>
+        <div class="game-over-buttons">
+          <button id="restart-button" class="game-over-button">Play Again</button>
+          <button id="main-menu-button-gameover" class="game-over-button">Main Menu</button>
+        </div>
       </div>
     `
     document.body.appendChild(gameOverScreen)
